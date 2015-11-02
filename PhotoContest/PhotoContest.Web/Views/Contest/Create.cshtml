@@ -73,7 +73,7 @@
                 $("#RewardStrategy").after(function () {
                     if ($(this).val() == 1) {
                         $(this).parent().append($('<div id="prize-div" class="form-group"></div>'));
-                        $("#prize-div").append('@Html.LabelFor(m => m.NumberOfPrizes, new { @class = "control-label col-sm-2" })');
+                      $("#prize-div").append('@Html.LabelFor(m => m.NumberOfPrizes, new { @class = "control-label col-sm-2" })');
                         $("#prize-div").append('@Html.TextBoxFor(m => m.NumberOfPrizes, new { @class = "form-control", @id = "append-div" })');
                     }
                 });

@@ -6,18 +6,19 @@ namespace PhotoContest.Models
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Contest
     {
         private ICollection<Image> images;
         private ICollection<Prize> prizes;
-        //private ICollection<User> participants;
+        private ICollection<User> participants;
 
         public Contest()
         {
             this.images = new HashSet<Image>();
             this.prizes = new HashSet<Prize>();
-            //this.participants = new HashSet<User>();
+            this.participants = new HashSet<User>();
         }
 
         [Key]
@@ -71,10 +72,10 @@ namespace PhotoContest.Models
             set { this.prizes = value; }
         }
 
-        //public virtual ICollection<User> Participants
-        //{
-        //    get { return this.participants; }
-        //    set { this.participants = value; }
-        //}
+        public virtual ICollection<User> Participants
+        {
+            get { return this.participants; }
+            set { this.participants = value; }
+        }
     }
 }

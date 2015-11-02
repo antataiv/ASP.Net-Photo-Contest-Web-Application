@@ -3,7 +3,9 @@
     ViewBag.Title = "Create Contest";
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="jumbotron container">
+    <h1>@ViewBag.Title</h1>
+</div>
 
 @using (Ajax.BeginForm("Create", "Contest", new AjaxOptions()
 {
@@ -12,48 +14,67 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    <div>
-        @Html.LabelFor(m => m.Name)
-        @Html.EditorFor(m => m.Name)
-        @Html.ValidationMessageFor(m => m.Name)
-    </div>
-    <div>
-        @Html.LabelFor(m => m.CategoryId)
-        @Html.DropDownListFor(m => m.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Categories)
-        @Html.ValidationMessageFor(m => m.CategoryId)
-    </div>
-    <div>
-        @Html.LabelFor(m => m.RewardStrategy)
-        @Html.EnumDropDownListFor(m => m.RewardStrategy)
-    </div>
-    <div>
-        @Html.LabelFor(m => m.ParticipationStrategy)
-        @Html.EnumDropDownListFor(m => m.ParticipationStrategy)
-    </div>
-    <div>
-        @Html.LabelFor(m => m.VotingStrategy)
-        @Html.EnumDropDownListFor(m => m.VotingStrategy)
-    </div>
-    <div>
-        @Html.LabelFor(m => m.DeadlineStrategy)
-        @Html.EnumDropDownListFor(m => m.DeadlineStrategy)
-    </div>
-    <div>
-        <input type="submit" name="name" value="Create Contest" />
-    </div>
+    <form class="form-horizontal" role="form">
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+        <br />
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.CategoryId, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Categories, new { @class = "form-control" })
+            </div>
+            @Html.ValidationMessageFor(m => m.CategoryId)
+        </div>
+        <br />
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.RewardStrategy, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.RewardStrategy, new { @class = "form-control" })
+            </div>
+        </div>
+        <br />
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.ParticipationStrategy, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.ParticipationStrategy, new { @class = "form-control" })
+            </div>
+        </div><br />
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.VotingStrategy, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.VotingStrategy, new { @class = "form-control" })
+            </div>
+        </div><br />
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.DeadlineStrategy, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.DeadlineStrategy, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" name="name" value="Create Contest" />
+            </div>
+        </div>
+    </form>
 }
 
 @section Scripts {
     <script>
         $(function () {
-            $("#RewardStrategy").parent().append($('<div id="prize-div"></div>'));
+            $("#RewardStrategy").parent().append($('<div id="prize-div" class="form-group"></div>'));
             $("#RewardStrategy").on("change", function () {
                 $("#prize-div").remove();
                 $("#RewardStrategy").after(function () {
                     if ($(this).val() == 1) {
-                        $(this).parent().append($('<div id="prize-div"></div>'));
-                        $("#prize-div").append('@Html.LabelFor(m => m.NumberOfPrizes)');
-                        $("#prize-div").append('@Html.EditorFor(m => m.NumberOfPrizes)');
+                        $(this).parent().append($('<div id="prize-div class="form-group""></div>'));
+                        $("#prize-div").append('@Html.LabelFor(m => m.NumberOfPrizes, new { @class = "control-label col-sm-2" })');
+                        $("#prize-div").append('@Html.TextBoxFor(m => m.NumberOfPrizes, new { @class = "form-control", @id = "append-div" })');
                     }
                 });
             });
@@ -61,26 +82,26 @@
     </script>
     <script>
         $(function () {
-            $("#DeadlineStrategy").parent().append($('<div id="deadline-div"></div>'));
-            $(this).parent().append($('<div id="deadline-div"></div>'));
-            $("#deadline-div").append('@Html.LabelFor(m => m.EndDate)');
-            $("#deadline-div").append('@Html.EditorFor(m => m.EndDate)');
+            $("#DeadlineStrategy").parent().append($('<div id="deadline-div" class="form-group"></div>'));
+            $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+            $("#deadline-div").append('@Html.LabelFor(m => m.EndDate, new { @class = "control-label col-sm-2" })');
+            $("#deadline-div").append('@Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @id="append-div", @type="date" })');
             $("#DeadlineStrategy").on("change", function () {
                 if ($(this).val() == 0) {
                     console.log("ByTime");
                     $("#deadline-div").remove();
                     $("#DeadlineStrategy").after(function () {
-                        $(this).parent().append($('<div id="deadline-div"></div>'));
-                        $("#deadline-div").append('@Html.LabelFor(m => m.EndDate)');
-                        $("#deadline-div").append('@Html.EditorFor(m => m.EndDate)');
+                        $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+                        $("#deadline-div").append('@Html.LabelFor(m => m.EndDate, new { @class = "control-label col-sm-2" })');
+                        $("#deadline-div").append('@Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @id = "append-div", @type = "date" })');
                     });
                 } else if ($(this).val() == 1) {
                     console.log("ByParticipants");
                     $("#deadline-div").remove();
                     $("#DeadlineStrategy").after(function () {
-                        $(this).parent().append($('<div id="deadline-div"></div>'));
-                        $("#deadline-div").append('@Html.LabelFor(m => m.ParticipantsLimit)');
-                        $("#deadline-div").append('@Html.EditorFor(m => m.ParticipantsLimit)');
+                        $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+                        $("#deadline-div").append('@Html.LabelFor(m => m.ParticipantsLimit, new { @class = "control-label col-sm-2" })');
+                        $("#deadline-div").append('@Html.TextBoxFor(m => m.ParticipantsLimit, new { @class = "form-control"})');
                     });
                 }
             });

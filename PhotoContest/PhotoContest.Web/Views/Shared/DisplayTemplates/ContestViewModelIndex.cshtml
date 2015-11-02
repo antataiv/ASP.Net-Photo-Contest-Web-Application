@@ -1,4 +1,37 @@
 ﻿@model PhotoContest.Web.ViewModels.ContestViewModelIndex
 
+<div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+        <div class="caption">
+            <h4>@Model.Name</h4>
+        </div>
+        @if (Model.CategoryId == 1)
+        {
+            <img src="https://www.dropbox.com/home/PhotoContestImages_last/Category?preview=admin_2015_11_1_animal.jpg" alt="images" id="category-image" />
+        }
+        @*@if (Model.CategoryId == 1)
+        {
+            <img src="https://dl.dropboxusercontent.com/1/view/obfkkkeptta4ze1/PhotoContestImages_last/Category/admin_2015_11_1_travel.jpg" alt="images" id="category-image" />
+        }*@
+        @if (Model.CategoryId == 2)
+        {
+            <img src="https://dl.dropboxusercontent.com/1/view/qqf0komzqaxfpjx/PhotoContestImages_last/Category/admin_2015_11_1_sport.jpg" alt="images" id="category-image" />
+        }
+        @if (Model.CategoryId == 3)
+        {
+            <img src="https://dl.dropboxusercontent.com/1/view/pjm19ee99dsyg5v/PhotoContestImages_last/Category/admin_2015_11_1_nature.jpg" alt="images" id="category-image" />
+        }
+        @if (Model.CategoryId == 4)
+        {
+            <img src="https://dl.dropboxusercontent.com/1/view/0gjs2lb0z2hu9d4/PhotoContestImages_last/Category/admin_2015_11_1_kids.jpg" alt="images" id="category-image" />
+        }
+        @if (Model.CategoryId == 5)
+        {
+            <img src="https://dl.dropboxusercontent.com/1/view/05a9ljdlesabcym/PhotoContestImages_last/Category/admin_2015_11_1_animal.jpg" alt="images" id="category-image" />
+        }
+        <div class="caption">
+            <p>@Html.ActionLink("Details", "Details", "Contest", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+        </div>
+    </div>
+</div>
 
-    <h4>@Model.Name <span>@Html.ActionLink("Details", "Details", "Contest", new { id = Model.Id }, new { @class = "btn btn-default" })</span></h4>

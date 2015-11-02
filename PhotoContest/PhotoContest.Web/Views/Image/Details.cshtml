@@ -1,0 +1,48 @@
+﻿@model PhotoContest.Web.ViewModels.ImageDetailsViewModel
+
+<div>
+    <h2>@Html.DisplayNameFor(x => x.Title) : @Html.DisplayFor(x => x.Title)</h2>
+    <img src="@Model.PictureUrl" alt="Alternate Text" />
+    <p>@Html.DisplayNameFor(x => x.ContestName) : @Html.DisplayFor(x => x.ContestName)</p>
+    <p>Upload By : @Html.DisplayFor(x => x.AuthorUserName)</p>
+    <p>@Html.DisplayNameFor(x => x.PostedOn) : @Html.DisplayFor(x => x.PostedOn)</p>
+    <p>Rating : @Model.Rating</p>
+</div>
+
+<div id="comments">
+    <h2>Comments</h2>
+    @if (Model.Comments.Any())
+    {
+        @Html.DisplayFor(x => x.Comments);
+    }
+    else
+    {
+        <p>No Comments</p>
+    }
+</div>
+
+<div>
+    <h2>Add Comment</h2>
+    @using (Ajax.BeginForm("AddComment", "Image", new { ImageId=Model.Id}, new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.InsertAfter,
+        UpdateTargetId = "comments",
+        OnSuccess="onAddCommentSuccess"
+    }))
+    {
+        @Html.AntiForgeryToken()
+
+        <input type="text" id="content" name="content" value="" />
+        <input type="submit" name="name" value="Add Comment" />
+    }
+</div>
+    
+@section scripts{
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function onAddCommentSuccess() {
+            document.getElementById("content").value = '';
+        }
+    </script>
+}

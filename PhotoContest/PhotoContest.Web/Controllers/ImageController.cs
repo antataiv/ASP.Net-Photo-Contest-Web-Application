@@ -11,6 +11,8 @@ using AutoMapper.QueryableExtensions;
 using PagedList;
 using PagedList.Mvc;
 using PhotoContest.Web.ViewModels;
+using PhotoContest.Web.Models.BindingModels;
+using PhotoContest.Models;
 
 namespace PhotoContest.Web.Controllers
 {
@@ -33,11 +35,79 @@ namespace PhotoContest.Web.Controllers
             return View(myImages);
         }
 
-        public ActionResult Details(int? Id)
+        public ActionResult Details(int Id)
         {
+            var image = this.Data.Images.All().Where(i => i.Id == Id).Project().To<ImageDetailsViewModel>().FirstOrDefault();
+
+            return this.View(image);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddComment(CommentBindingModel model)
+        {
+            if (model!=null && this.ModelState.IsValid)
+            {
+                model.UserId = this.User.Identity.GetUserId();
+                model.PostedOn=DateTime.Now;
+                var comment = Mapper.Map<Comment>(model);
+                var author = this.Data.Users.All().FirstOrDefault(u => u.Id == model.UserId);
+                comment.Author = author;
+
+                this.Data.Comments.Add(comment);
+                this.Data.SaveChanges();
+
+                var commentDb = this.Data.Comments
+                    .All()
+                    .Where(x => x.Id == comment.Id)
+                    .Project()
+                    .To<CommentViewModel>()
+                    .FirstOrDefault();
+
+                return this.PartialView("DisplayTemplates/CommentViewModel", commentDb);
+            }
 
 
-            return null;
+            return this.Json("Error");
+        }
+
+        public ActionResult Vote(int imageId)
+        {
+            var image = this.Data.Images
+                            .All()
+                            .FirstOrDefault(i => i.Id == imageId);
+
+            if (true)
+            {
+                
+            }
+            var currUserId = this.User.Identity.GetUserId();
+
+            var currUser = this.Data.Users
+                                .All()
+                                .FirstOrDefault(u => u.Id == currUserId);
+
+            if (image != null)
+            {
+                var userHasVoted = image.Ratings.Any(r => r.Author.Id == currUser.Id);
+                if (!userHasVoted)
+                {
+                    this.Data.Ratings.Add(new Rating
+                    {
+                        ImageId = image.Id,
+                        Author = currUser,
+                        Value = 1
+                    });
+
+                    this.Data.SaveChanges();
+                }
+
+                var votesCount = image.Ratings.Sum(v => v.Value);
+
+                return this.Content(votesCount.ToString());
+            }
+
+            return new EmptyResult();
         }
     }
 }

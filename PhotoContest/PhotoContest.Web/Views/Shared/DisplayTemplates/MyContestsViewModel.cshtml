@@ -1,0 +1,22 @@
+﻿@model PhotoContest.Web.ViewModels.MyContestsViewModel
+@{
+    ViewBag.Title = "MyContestsViewModel";
+}
+
+
+<div class="well well-lg">
+    <div class="row" >
+        <span>@Model.Name</span>
+        <div class="pull-right">
+            <div class="btn-group" >
+                <p>@Html.ActionLink("Update", "Update", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+            </div>
+            <div class="btn-group" >
+                <p>@Html.ActionLink("Dismiss", "Dismiss", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+            </div>
+            <div class="btn-group" >
+                <p>@Html.ActionLink("Finalize", "Finalize", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+            </div>
+        </div>
+     </div>   
+</div>

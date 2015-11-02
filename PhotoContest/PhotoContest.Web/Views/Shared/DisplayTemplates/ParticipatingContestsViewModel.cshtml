@@ -1,0 +1,7 @@
+﻿@model PhotoContest.Web.ViewModels.ParticipatingContestsViewModel
+@{
+    ViewBag.Title = "ParticipatingContestsViewModel";
+}
+
+<h2>@Model.Name <span>@Html.ActionLink("Details", "Details", "Contest", new { id = Model.Id }, new { @class = "btn btn-default" })</span></h2>
+

@@ -1,0 +1,8 @@
+﻿@model PhotoContest.Web.ViewModels.ImageViewModel
+<div id="image-@Model.Id" class="row">
+    <div class="col-xs-6 col-md-3">
+        <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
+        <p>@Model.User</p>
+        <p>ADD VOTING HERE</p>
+    </div>
+</div>

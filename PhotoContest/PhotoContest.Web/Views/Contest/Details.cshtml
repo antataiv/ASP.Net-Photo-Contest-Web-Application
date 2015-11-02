@@ -1,0 +1,44 @@
+﻿@model PhotoContest.Web.ViewModels.ContestDetailsViewModel
+@{
+    ViewBag.Title = "Contest Details";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <p>@Html.LabelFor(m => m.Name) : @Model.Name</p>
+    <p>@Html.LabelFor(m => m.CategoryName) : @Model.CategoryName</p>
+    <p>@Html.LabelFor(m => m.CreatorName) : @Model.CreatorName</p>
+    <p>@Html.LabelFor(m => m.Flag) : @Model.Flag</p>
+    <p>@Html.LabelFor(m => m.ParticipatingImages) : @Model.ParticipatingImages</p>
+    <p>@Html.LabelFor(m => m.Participants) : @Model.Participants</p>
+</div>
+
+<div>
+    @if (Model.UserPatricipates)
+    {
+        @Html.ActionLink("Upload Image", "UploadImage", "Contest", new AjaxOptions
+   {
+       HttpMethod = "POST",
+       InsertionMode = InsertionMode.InsertAfter
+   },
+   new { @class = "btn btn-default" })
+    }
+    else if (Request.IsAuthenticated)
+    {
+        @Html.ActionLink("Participate", "", "Contest", new { }, new { @class = "btn btn-default" })
+    }
+</div>
+
+<div id="images">
+    <div>
+        @if (Model.Images.Any())
+        {
+            @Html.DisplayFor(i => i.Images)
+        }
+        else
+        {
+            <span>The are no images for this contest at the moment.KUF</span>
+        }
+    </div>
+</div>

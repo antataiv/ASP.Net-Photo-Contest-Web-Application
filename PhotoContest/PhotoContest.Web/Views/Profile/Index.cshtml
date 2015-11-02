@@ -1,0 +1,24 @@
+﻿@model PhotoContest.Web.ViewModels.UserProfileViewModel
+@{
+    ViewBag.Title = "My Profile";
+}
+
+<p>@Model.UserName</p>
+<p>@Model.Email</p>
+<p>@Model.PhoneNumber</p>
+<img src="@Model.ProfileImageUrl" alt="Image" />
+
+@if (ViewBag.NumOfMyContests > 0)
+{
+    <div class="row">
+        @Html.ActionLink("My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
+    </div>
+}
+
+<div class="row">
+    @Html.ActionLink("Active contests I Participate", "ParticipatingContests", "MyContests", new { }, new { @class = "btn btn-default" })
+</div>
+
+<div class="row">
+    @Html.ActionLink("My Images", "MyImages", "Image", new { }, new { @class = "btn btn-default" })
+</div>

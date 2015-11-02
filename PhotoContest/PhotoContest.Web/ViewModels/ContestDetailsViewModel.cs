@@ -30,6 +30,8 @@
         {
             configuration.CreateMap<Contest, ContestDetailsViewModel>()
                 .ForMember(m => m.ParticipatingImages, conf => conf.MapFrom(i => i.Images.Count));
+            configuration.CreateMap<Contest, ContestDetailsViewModel>()
+                .ForMember(m => m.Participants, conf => conf.MapFrom(p => p.Participants.Count));
         }
     }
 }

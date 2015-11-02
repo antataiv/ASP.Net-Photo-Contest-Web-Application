@@ -8,7 +8,6 @@ using Microsoft.AspNet.Identity;
 using PhotoContest.Common.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using System.Linq;
 using PagedList;
 using PagedList.Mvc;
 using PhotoContest.Web.ViewModels;

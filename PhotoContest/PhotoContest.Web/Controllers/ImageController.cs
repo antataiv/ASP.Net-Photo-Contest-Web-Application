@@ -77,6 +77,10 @@ namespace PhotoContest.Web.Controllers
                             .All()
                             .FirstOrDefault(i => i.Id == imageId);
 
+            if (true)
+            {
+                
+            }
             var currUserId = this.User.Identity.GetUserId();
 
             var currUser = this.Data.Users

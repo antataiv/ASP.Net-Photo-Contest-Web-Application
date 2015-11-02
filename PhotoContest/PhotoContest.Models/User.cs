@@ -3,6 +3,8 @@
     using Microsoft.AspNet.Identity;
     using Microsoft.AspNet.Identity.EntityFramework;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
@@ -12,7 +14,7 @@
         private ICollection<Rating> ratings;
         private ICollection<Comment> comments;
         private ICollection<Prize> prizes;
-        //private ICollection<Contest> contests;
+        private ICollection<Contest> participatingContests;
 
         public User()
         {
@@ -20,9 +22,9 @@
             this.ratings = new HashSet<Rating>();
             this.comments = new HashSet<Comment>();
             this.prizes = new HashSet<Prize>();
-            //this.contests = new HashSet<Contest>();
+            this.participatingContests = new HashSet<Contest>();
         }
-        
+
         public string ProfileImageUrl { get; set; }
 
         public string ProfileImagePath { get; set; }
@@ -55,11 +57,13 @@
             set { this.prizes = value; }
         }
 
-        //public virtual ICollection<Contest> Contests
-        //{
-        //    get { return this.contests; }
-        //    set { this.contests = value; }
-        //}
+        //public int PatricipatingContestId { get; set; }
+
+        public virtual ICollection<Contest> PatricipatingContests
+        {
+            get { return this.participatingContests; }
+            set { this.participatingContests = value; }
+        }
 
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)

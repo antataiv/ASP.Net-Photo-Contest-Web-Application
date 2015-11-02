@@ -2,6 +2,7 @@
 using PhotoContest.Models;
 using System.Data.Entity;
 using PhotoContest.Data.Migrations;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace PhotoContest.Data
 {
@@ -20,15 +21,18 @@ namespace PhotoContest.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Contest>()
-            //    .HasMany(c => c.Participants)
-            //    .WithMany(c => c.Contests)
-            //    .Map(m =>
-            //    {
-            //        m.MapLeftKey("ParticipantId");
-            //        m.MapRightKey("ContestId");
-            //        m.ToTable("UsersContests");
-            //    });
+            modelBuilder.Entity<Contest>()
+                .HasMany(c => c.Participants)
+                .WithMany(u => u.PatricipatingContests)
+                .Map(m =>
+                {
+                    m.ToTable("ContestsUsers");
+                    m.MapLeftKey("ContestId");
+                    m.MapRightKey("ParticipantId");
+                });
+
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>();
 
             base.OnModelCreating(modelBuilder);
         }

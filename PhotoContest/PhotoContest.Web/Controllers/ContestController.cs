@@ -141,7 +141,7 @@ namespace PhotoContest.Web.Controllers
                     this.TempData["Success"] = new[] { "Image successfully added." };
                 }
 
-                return this.RedirectToAction("Details", "Contest", new { contestId });
+                return this.RedirectToAction("Details", "Contest", new { id = contestId });
 
             }
 

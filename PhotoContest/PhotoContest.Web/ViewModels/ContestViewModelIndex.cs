@@ -16,6 +16,8 @@ namespace PhotoContest.Web.ViewModels
 
         public string Flag { get; set; }
 
+        public int CategoryId { get; set; }
+
         public void CreateMappings(AutoMapper.IConfiguration configuration)
         {
             configuration.CreateMap<Contest, ContestViewModelIndex>()

@@ -1,28 +1,33 @@
-﻿@using PagedList.Mvc
+﻿@using System.Security.Policy
+@using PagedList.Mvc
 @model PagedList.IPagedList<PhotoContest.Web.ViewModels.ContestViewModelIndex>
 @{
-    ViewBag.Title = "All Active Contests";
+    ViewBag.Title = "Active Contests";
 }
+<div class="jumbotron container">
+    <h1>@ViewBag.Title</h1>
+    <div class="row pull-right">
+        @Html.ActionLink("Past Contests", "PastContests", "Contest", new { }, new { @class = "btn btn-default" })
+        @if (this.User.Identity.IsAuthenticated)
+        {
+            @Html.ActionLink("Create Contest", "Create", "Contest", new { }, new { @class = "btn btn-default" })
+        }
+        @if (this.User.Identity.IsAuthenticated && ViewBag.NumberOfCreatedContests > 0)
+        {
+            @Html.ActionLink("Manage My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
+        }
+    </div>
 
-<h2>@ViewBag.Title</h2>
-
-
-<div class="row">
-    @Html.DisplayFor(x => x)
 </div>
-@Html.PagedListPager(Model, page => Url.Action("Index",
-    new { page }))
-<div class="row">
-    @Html.ActionLink("Past Contests", "PastContests", "Contest", new { }, new { @class = "btn btn-default" })
-</div>
-<div class="row">
-    @if (this.User.Identity.IsAuthenticated)
-    {
-        @Html.ActionLink("Create Contest", "Create", "Contest", new { }, new { @class = "btn btn-default" })
-    }
-    @if (this.User.Identity.IsAuthenticated && ViewBag.NumberOfCreatedContests > 0)
-    {
-        @Html.ActionLink("Manage My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
-    }
+<div class="container">
+    @Html.Partial("_LeftSideNavbar")
+    <div class="col-xs-12 col-sm-10" style="margin-left: 20px;">
+        <div class="row">
+            @Html.DisplayFor(x => x)
+        </div>
+        <div id="pager">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
+    </div>
 </div>
 

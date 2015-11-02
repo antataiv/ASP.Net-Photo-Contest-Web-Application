@@ -1,4 +1,6 @@
-﻿namespace PhotoContest.Web.Controllers
+﻿using DropNet;
+
+namespace PhotoContest.Web.Controllers
 {
     using System.Web.Mvc;
     using AutoMapper.QueryableExtensions;

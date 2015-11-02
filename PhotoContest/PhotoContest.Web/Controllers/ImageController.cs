@@ -8,10 +8,11 @@ using Microsoft.AspNet.Identity;
 using PhotoContest.Common.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using System.Linq;
 using PagedList;
 using PagedList.Mvc;
 using PhotoContest.Web.ViewModels;
+using PhotoContest.Web.Models.BindingModels;
+using PhotoContest.Models;
 
 namespace PhotoContest.Web.Controllers
 {
@@ -34,11 +35,40 @@ namespace PhotoContest.Web.Controllers
             return View(myImages);
         }
 
-        public ActionResult Details(int? Id)
+        public ActionResult Details(int Id)
         {
+            var image = this.Data.Images.All().Where(i => i.Id == Id).Project().To<ImageDetailsViewModel>().FirstOrDefault();
+
+            return this.View(image);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddComment(CommentBindingModel model)
+        {
+            if (model!=null && this.ModelState.IsValid)
+            {
+                model.UserId = this.User.Identity.GetUserId();
+                model.PostedOn=DateTime.Now;
+                var comment = Mapper.Map<Comment>(model);
+                var author = this.Data.Users.All().FirstOrDefault(u => u.Id == model.UserId);
+                comment.Author = author;
+
+                this.Data.Comments.Add(comment);
+                this.Data.SaveChanges();
+
+                var commentDb = this.Data.Comments
+                    .All()
+                    .Where(x => x.Id == comment.Id)
+                    .Project()
+                    .To<CommentViewModel>()
+                    .FirstOrDefault();
+
+                return this.PartialView("DisplayTemplates/CommentViewModel", commentDb);
+            }
 
 
-            return null;
+            return this.Json("Error");
         }
     }
 }

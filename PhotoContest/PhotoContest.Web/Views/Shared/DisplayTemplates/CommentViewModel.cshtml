@@ -1,0 +1,7 @@
+﻿@model PhotoContest.Web.ViewModels.CommentViewModel
+
+<div class="body-content">
+    <p>Posted By : @Html.DisplayFor(x => x.AuthorUserName)</p>
+    <p>@Html.DisplayNameFor(x=>x.PostedOn) : @Html.DisplayFor(x => x.PostedOn)</p>
+    <p>@Html.DisplayFor(x=>x.Content)</p>
+</div>

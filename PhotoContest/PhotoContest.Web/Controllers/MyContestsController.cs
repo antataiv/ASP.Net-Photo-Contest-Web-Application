@@ -115,9 +115,17 @@ namespace PhotoContest.Web.Controllers
             }
 
             var winnersCount = contest.NumberOfPrizes.GetValueOrDefault();
-            var winners = this.Data.Contests.All()
+            //var winners = this.Data.Contests.All()
+            //    .Take(winnersCount)
+            //    .ProjectTo<PrizeViewModel>();
+
+            var winners = this.Data.Images
+                .All()
+                .Where(i=>i.ContestId==id)
+                .OrderByDescending(i=>i.Ratings.Sum(r=>r.Value))
                 .Take(winnersCount)
-                .ProjectTo<PrizeViewModel>();
+                .Project()
+                .To<WinnerImagesViewModel>().ToList();
 
             contest.Flag = Flag.Inactive;
             this.Data.SaveChanges();

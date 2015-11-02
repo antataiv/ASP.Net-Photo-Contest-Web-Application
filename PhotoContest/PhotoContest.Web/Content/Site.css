@@ -41,6 +41,11 @@ textarea {
     color: white;
     text-align: center; 
 }
+.jumbotron h2,h3 {
+    color: black;
+    text-align: center; 
+}
+
 #header {
     padding-left: 170px;
 }

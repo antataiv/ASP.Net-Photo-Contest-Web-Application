@@ -1,24 +1,38 @@
-﻿@model PhotoContest.Web.ViewModels.UserProfileViewModel
+﻿@model PhotoContest.Web.ViewModels.ProfileViewModel
 @{
     ViewBag.Title = "My Profile";
 }
-
-<p>@Model.UserName</p>
-<p>@Model.Email</p>
-<p>@Model.PhoneNumber</p>
-<img src="@Model.ProfileImageUrl" alt="Image" />
-
-@if (ViewBag.NumOfMyContests > 0)
-{
+<div class="jumbotron container">
+    @*<img src="@Model.UserProfileViewModel.ProfileImageUrl" alt="profile-image"/>*@
     <div class="row">
-        @Html.ActionLink("My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
+        <div class="col-md-6">
+            <img src="~/Content/profile-image-default.png" class="img-circle" alt="profile-image" />
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.UserProfileViewModel.UserName</h2>
+            <h3><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> @Model.UserProfileViewModel.Email</h3>
+        </div>
     </div>
-}
-
-<div class="row">
-    @Html.ActionLink("Active contests I Participate", "ParticipatingContests", "MyContests", new { }, new { @class = "btn btn-default" })
+        <div class="pull-right">
+            @Html.ActionLink("Joined Contests", "ParticipatingContests", "MyContests", new { }, new { @class = "btn btn-default" })
+            @Html.ActionLink("My Images", "MyImages", "Image", new { }, new { @class = "btn btn-default" })
+        </div>
+    </div>
+<div class="col">
+    @Html.DisplayFor(model => model.MyContests)
 </div>
 
-<div class="row">
-    @Html.ActionLink("My Images", "MyImages", "Image", new { }, new { @class = "btn btn-default" })
-</div>
+@*@if (ViewBag.NumOfMyContests > 0)
+    {
+        <div class="row">
+            @Html.ActionLink("My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
+        </div>
+    }*@
+
+@*<div class="row">
+        @Html.ActionLink("Active contests I Participate", "ParticipatingContests", "MyContests", new { }, new { @class = "btn btn-default" })
+    </div>
+
+    <div class="row">
+        @Html.ActionLink("My Images", "MyImages", "Image", new { }, new { @class = "btn btn-default" })
+    </div>*@

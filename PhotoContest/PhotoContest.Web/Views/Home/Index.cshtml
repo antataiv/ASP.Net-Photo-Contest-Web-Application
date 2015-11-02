@@ -1,5 +1,4 @@
-﻿@using System.Security.Policy
-@using PagedList.Mvc
+﻿@using PagedList.Mvc
 @model PagedList.IPagedList<PhotoContest.Web.ViewModels.ContestViewModelIndex>
 @{
     ViewBag.Title = "Active Contests";
@@ -12,10 +11,10 @@
         {
             @Html.ActionLink("Create Contest", "Create", "Contest", new { }, new { @class = "btn btn-default" })
         }
-        @if (this.User.Identity.IsAuthenticated && ViewBag.NumberOfCreatedContests > 0)
+        @*@if (this.User.Identity.IsAuthenticated && ViewBag.NumberOfCreatedContests > 0)
         {
             @Html.ActionLink("Manage My Contests", "Index", "MyContests", new { }, new { @class = "btn btn-default" })
-        }
+        }*@
     </div>
 
 </div>

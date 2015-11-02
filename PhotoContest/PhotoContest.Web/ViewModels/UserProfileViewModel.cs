@@ -23,18 +23,16 @@ namespace PhotoContest.Web.ViewModels
 
         public string Email { get; set; }
         
-        public string PhoneNumber { get; set; }
-
-        public void CreateMappings(IConfiguration configuration)
+       public void CreateMappings(IConfiguration configuration)
         {
             configuration.CreateMap<User, UserProfileViewModel>()
-                .ForMember(x => x.UserName, cnf => cnf.MapFrom(m => this.UserName));
+                .ForMember(x => x.UserName, cnf => cnf.MapFrom(m => m.UserName));
 
             configuration.CreateMap<User, UserProfileViewModel>()
                .ForMember(x => x.Email, cnf => cnf.MapFrom(m => m.Email));
 
-            configuration.CreateMap<User, UserProfileViewModel>()
-              .ForMember(x => x.PhoneNumber, cnf => cnf.MapFrom(m => m.PhoneNumber));
+            //configuration.CreateMap<User, UserProfileViewModel>()
+            //  .ForMember(x => x.PhoneNumber, cnf => cnf.MapFrom(m => m.PhoneNumber));
         }
     }
 }

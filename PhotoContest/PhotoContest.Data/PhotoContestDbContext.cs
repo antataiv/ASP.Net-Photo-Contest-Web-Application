@@ -29,6 +29,7 @@ namespace PhotoContest.Data
             //        m.MapRightKey("ContestId");
             //        m.ToTable("UsersContests");
             //    });
+          
 
             base.OnModelCreating(modelBuilder);
         }

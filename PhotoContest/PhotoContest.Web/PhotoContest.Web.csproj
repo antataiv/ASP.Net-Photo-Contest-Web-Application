@@ -256,6 +256,7 @@
     <Compile Include="ViewModels\ParticipatingContestsViewModel.cs" />
     <Compile Include="ViewModels\PastContestViewModel.cs" />
     <Compile Include="ViewModels\PrizeViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\UserProfileViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
@@ -264,6 +265,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\photography.jpg" />
+    <Content Include="Content\profile-image-default.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

@@ -22,17 +22,26 @@ namespace PhotoContest.Web.Controllers
 
         public ActionResult Index()
         {
-            var userId= this.User.Identity.GetUserId();
+            var userId = this.User.Identity.GetUserId();
 
             var profileInfo = this.Data.Users
                 .All()
                 .Where(u => u.Id.Equals(userId))
-                .Project()
-                .To<UserProfileViewModel>().FirstOrDefault();
+                .ProjectTo<UserProfileViewModel>().FirstOrDefault();
+
+            var myContests = this.Data.Contests
+                .All()
+                .Where(c => c.CreatorId==userId)
+                .OrderBy(c => c.Flag.ToString())
+                .ProjectTo<MyContestsViewModel>().ToList();
+
+            var profile = new ProfileViewModel();
+            profile.UserProfileViewModel = profileInfo;
+            profile.MyContests = myContests;
 
             this.ViewBag.NumOfMyContests = this.Data.Contests.All().Where(c => c.CreatorId.Equals(userId)).Count();
 
-            return View(profileInfo);
+            return View(profile);
         }
     }
 }

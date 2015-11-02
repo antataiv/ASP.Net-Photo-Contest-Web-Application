@@ -258,6 +258,7 @@
     <Compile Include="ViewModels\PrizeViewModel.cs" />
     <Compile Include="ViewModels\UserProfileViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="ViewModels\WinnerImagesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -335,6 +336,8 @@
     <Content Include="Views\Shared\DisplayTemplates\ImageViewModel.cshtml" />
     <Content Include="Views\Image\Details.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CommentViewModel.cshtml" />
+    <Content Include="Views\MyContests\Finalize.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\WinnerImagesViewModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

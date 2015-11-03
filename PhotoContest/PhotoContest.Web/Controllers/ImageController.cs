@@ -46,10 +46,10 @@ namespace PhotoContest.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddComment(CommentBindingModel model)
         {
-            if (model!=null && this.ModelState.IsValid)
+            if (model != null && this.ModelState.IsValid)
             {
                 model.UserId = this.User.Identity.GetUserId();
-                model.PostedOn=DateTime.Now;
+                model.PostedOn = DateTime.Now;
                 var comment = Mapper.Map<Comment>(model);
                 var author = this.Data.Users.All().FirstOrDefault(u => u.Id == model.UserId);
                 comment.Author = author;
@@ -71,24 +71,21 @@ namespace PhotoContest.Web.Controllers
             return this.Json("Error");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Vote(int imageId)
         {
             var image = this.Data.Images
                             .All()
                             .FirstOrDefault(i => i.Id == imageId);
 
-            if (true)
+            if (image != null)
             {
-                
-            }
-            var currUserId = this.User.Identity.GetUserId();
-
-            var currUser = this.Data.Users
+                var currUserId = this.User.Identity.GetUserId();
+                var currUser = this.Data.Users
                                 .All()
                                 .FirstOrDefault(u => u.Id == currUserId);
 
-            if (image != null)
-            {
                 var userHasVoted = image.Ratings.Any(r => r.Author.Id == currUser.Id);
                 if (!userHasVoted)
                 {
@@ -104,7 +101,8 @@ namespace PhotoContest.Web.Controllers
 
                 var votesCount = image.Ratings.Sum(v => v.Value);
 
-                return this.Content(votesCount.ToString());
+                return this.RedirectToAction("Details", "Contest", new { id = image.ContestId });
+                //return this.Content(votesCount.ToString());
             }
 
             return new EmptyResult();

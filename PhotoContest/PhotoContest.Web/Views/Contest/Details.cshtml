@@ -1,4 +1,5 @@
 ﻿@model PhotoContest.Web.ViewModels.ContestDetailsViewModel
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Contest Details";
 }
@@ -15,15 +16,15 @@
 </div>
 
 <div>
-    @if (Model.UserPatricipates)
+    @if (Model.ParticipatingUsers.Contains(this.User.Identity.GetUserId()) || Model.ParticipationStrategy == "Open")
     {
         using (Ajax.BeginForm("UploadImage", "Contest", new { contestId = Model.Id }, new AjaxOptions()
-   {
-       HttpMethod = "POST",
-       InsertionMode = InsertionMode.InsertAfter,
-       UpdateTargetId = "images"
-   },
-   new { @class = "btn btn-default", enctype = "multipart/form-data" }))
+           {
+               HttpMethod = "POST",
+               InsertionMode = InsertionMode.InsertAfter,
+               UpdateTargetId = "images"
+           },
+           new { @class = "btn btn-default", enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             <input type="file" name="upload" value="" />
@@ -32,9 +33,17 @@
             <input type="submit" name="name" value="Upload Image" />
         }
     }
-    else if (Request.IsAuthenticated)
+    else if (Model.ParticipationStrategy == "Closed" && this.Request.IsAuthenticated)
     {
-        @Html.ActionLink("Participate", "", "Contest", new { }, new { @class = "btn btn-default" })
+        using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
+           {
+               HttpMethod = "POST"
+           },
+           new { @class = "btn btn-default" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="submit" name="name" value="Apply for contest" class="btn btn-default" />
+        }
     }
 </div>
 

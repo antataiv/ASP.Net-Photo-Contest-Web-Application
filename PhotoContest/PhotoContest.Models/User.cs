@@ -57,7 +57,7 @@
             set { this.prizes = value; }
         }
 
-        //public int PatricipatingContestId { get; set; }
+        public int PatricipatingContestId { get; set; }
 
         public virtual ICollection<Contest> PatricipatingContests
         {

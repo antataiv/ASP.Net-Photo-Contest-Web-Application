@@ -54,12 +54,7 @@ namespace PhotoContest.Web.Controllers
 
             var contestViewModel = Mapper.Map<ContestDetailsViewModel>(contest);
 
-            var userId = this.User.Identity.GetUserId();
             contestViewModel.CreatorName = contest.Creator.UserName;
-            contestViewModel.UserPatricipates = this.Data.Images
-                                                    .All()
-                                                    .Where(img => img.ContestId == id)
-                                                    .Any(i => i.Author.Id == userId);
 
             contestViewModel.Participants = this.Data.Images
                                                     .All()
@@ -146,6 +141,31 @@ namespace PhotoContest.Web.Controllers
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid model");
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Participate(int contestId)
+        {
+            var contest = this.Data.Contests
+                                .All()
+                                .FirstOrDefault(c => c.Id == contestId);
+
+            var loggedUserId = this.User.Identity.GetUserId();
+            var loggedUser = this.Data.Users
+                            .All()
+                            .FirstOrDefault(u => u.Id == loggedUserId);
+
+            if (contest != null)
+            {
+                contest.Participants.Add(loggedUser);
+                this.Data.SaveChanges();
+
+                return this.RedirectToAction("Details", "Contest", new { id = contestId });
+            }
+
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
     }
 }

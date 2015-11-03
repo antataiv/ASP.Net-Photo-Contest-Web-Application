@@ -20,9 +20,11 @@
 
         public Flag Flag { get; set; }
 
-        public bool UserPatricipates { get; set; }
+        public ICollection<string> ParticipatingUsers { get; set; }
 
         public int Participants { get; set; }
+
+        public string ParticipationStrategy { get; set; }
 
         public IEnumerable<ImageViewModel> Images { get; set; }
 
@@ -32,6 +34,10 @@
                 .ForMember(m => m.ParticipatingImages, conf => conf.MapFrom(i => i.Images.Count));
             configuration.CreateMap<Contest, ContestDetailsViewModel>()
                 .ForMember(m => m.Participants, conf => conf.MapFrom(p => p.Participants.Count));
+            configuration.CreateMap<Contest, ContestDetailsViewModel>()
+                .ForMember(m => m.ParticipationStrategy, conf => conf.MapFrom(c => c.ParticipationStrategy));
+            configuration.CreateMap<Contest, ContestDetailsViewModel>()
+                .ForMember(m => m.ParticipatingUsers, conf => conf.MapFrom(p => p.Participants.Select(u => u.Id)));
         }
     }
 }

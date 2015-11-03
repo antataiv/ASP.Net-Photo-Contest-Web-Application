@@ -1,20 +1,61 @@
 ﻿@model PhotoContest.Web.ViewModels.ImageViewModel
+@using Microsoft.AspNet.Identity
 <div id="image-@Model.Id" class="row">
     <div class="col-xs-6 col-md-3">
         <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
         <div>@Html.LabelFor(m => m.User) : @Html.DisplayFor(m => m.User)</div>
-        <div>@Html.LabelFor(m => m.Rating) : @Html.DisplayFor(m => m.Rating)</div>
-        <div id="vote">
-            @if ((this.User.Identity.Name != Model.User && this.User.Identity.IsAuthenticated) || Model.VotingStrategy == "Open")
+        <div><span id="image-rating">@Html.LabelFor(m => m.Rating) : @Html.DisplayFor(m => m.Rating)</span></div>
+        <div id="vote-button">
+            @if (this.Request.IsAuthenticated)
             {
-                using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
+                if (Model.VotingStrategy == "Closed")
                 {
-                    HttpMethod = "POST"
-                }))
+                    if (this.Model.User != this.User.Identity.Name &&
+                        !Model.VotedUsers.Contains(this.User.Identity.GetUserId()) &&
+                        Model.UsersInContest.Contains(this.User.Identity.GetUserId()))
+                    {
+                        using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "image-rating",
+                            OnSuccess = "onVoteSuccess"
+                        }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="submit" name="name" value="Vote for image" />
+                        }
+                    }
+                }
+                else if (Model.VotingStrategy == "Open")
                 {
-                    <input type="submit" name="name" value="Vote for image" />
+                    if (this.Model.User != this.User.Identity.Name &&
+                        !Model.VotedUsers.Contains(this.User.Identity.GetUserId()))
+                    {
+                        using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "image-rating",
+                            OnSuccess = "onVoteSuccess"
+                        }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="submit" name="name" value="Vote for image" />
+                        }
+                    }
                 }
             }
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function onVoteSuccess() {
+            var button = document.getElementById("vote-button");
+            button.parentNode.removeChild(button);
+        }
+    </script>
+}

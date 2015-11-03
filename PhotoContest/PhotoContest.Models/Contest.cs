@@ -72,6 +72,8 @@ namespace PhotoContest.Models
             set { this.prizes = value; }
         }
 
+        public string ParticipantId { get; set; }
+
         public virtual ICollection<User> Participants
         {
             get { return this.participants; }

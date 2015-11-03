@@ -1,7 +1,9 @@
-﻿
-
-namespace PhotoContest.Web.Controllers
+﻿namespace PhotoContest.Web.Controllers
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using System.Web;
+    using Microsoft.WindowsAzure.Storage.Blob;
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
     using Microsoft.AspNet.Identity;
@@ -14,7 +16,6 @@ namespace PhotoContest.Web.Controllers
     using System.Web.Mvc;
     using PagedList;
     using System.Net;
-    using PhotoContest.Web.Helpers;
 
     public class ContestController : BaseController
     {
@@ -114,16 +115,18 @@ namespace PhotoContest.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult UploadImage(ImageBindingModel model, int contestId)
+        public async Task<ActionResult> UploadImage(ImageBindingModel model, int contestId)
         {
 
             if (ModelState.IsValid)
             {
-                if (model.Upload != null)
+                if (model.Upload != null && model.Upload.ContentLength > 0)
                 {
+                    CloudBlockBlob photo = await this.UploadBlobAsync(model.Upload);
                     var userId = this.User.Identity.GetUserId();
                     var user = this.Data.Users.All().FirstOrDefault(u => u.Id == userId);
-                    var paths = Helpers.UploadImages.UploadImage(user.UserName, model.Upload, false);
+
+                    //var paths = Helpers.UploadImages.UploadImage(user.UserName, model.Upload, false);
 
                     var image = new Image
                     {
@@ -131,9 +134,10 @@ namespace PhotoContest.Web.Controllers
                         Description = model.Description,
                         PostedOn = DateTime.Now,
                         Author = user,
-                        PictureUrl = Dropbox.Download(paths[0], "Contest"),
-                        ThumbnailUrl = Dropbox.Download(paths[1], "Thumbnails"),
+                        PictureUrl = photo.Uri.ToString(),
                         ContestId = contestId
+                        //PictureUrl = Dropbox.Download(paths[0], "Contest"),
+                        //ThumbnailUrl = Dropbox.Download(paths[1], "Thumbnails")
                     };
 
                     this.Data.Images.Add(image);
@@ -146,6 +150,20 @@ namespace PhotoContest.Web.Controllers
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid model");
+        }
+
+        private async Task<CloudBlockBlob> UploadBlobAsync(HttpPostedFileBase imageFile)
+        {
+
+            string blobName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+            var imageBlob = imagesContainer.GetBlockBlobReference(blobName);
+
+            using (var fileStream = imageFile.InputStream)
+            {
+                await imageBlob.UploadFromStreamAsync(fileStream);
+            }
+
+            return imageBlob;
         }
     }
 }

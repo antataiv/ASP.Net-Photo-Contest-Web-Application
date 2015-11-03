@@ -117,16 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DropboxAccessTDropboxAccessToken" xml:space="preserve">
-    <value>AxyLjLUX_zAAAAAAAAAADIeUEWhjBr45lCP5q7xtKJyAJbOgHS3MrSSVPMFw5I3y</value>
+  <data name="PrimaryAccessKey" xml:space="preserve">
+    <value>e1q5i2RZGujGxqC/dIDOAe0hesZrzzajuwHRqROySyIL2hT91em1oDyGuZgtHnhb9TXMfm37wwLPL0Tou96j4g==</value>
   </data>
-  <data name="DropboxApiKey" xml:space="preserve">
-    <value>44jgmn7d9fk6dsp</value>
-  </data>
-  <data name="DropboxApiSecret" xml:space="preserve">
-    <value>icch5f1x1ixs9go</value>
-  </data>
-  <data name="DropboxFolder" xml:space="preserve">
-    <value>PhotoContestImages_last</value>
+  <data name="Storage Account Name" xml:space="preserve">
+    <value>photocontest</value>
   </data>
 </root>

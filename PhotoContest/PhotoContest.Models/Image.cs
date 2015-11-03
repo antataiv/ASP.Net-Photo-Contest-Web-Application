@@ -22,10 +22,6 @@
         public string PictureUrl { get; set; }
 
         [Required]
-        public string ThumbnailUrl { get; set; }
-
-
-        [Required]
         public string Title { get; set; }
 
         public string Description { get; set; }

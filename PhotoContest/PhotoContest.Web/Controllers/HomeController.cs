@@ -39,12 +39,7 @@ namespace PhotoContest.Web.Controllers
             return this.View(activeContests);
         }
 
-        public ActionResult About()
-        {
-            return View();
-        }
-
-        public ActionResult Contact()
+       public ActionResult Contact()
         {
             return View();
         }

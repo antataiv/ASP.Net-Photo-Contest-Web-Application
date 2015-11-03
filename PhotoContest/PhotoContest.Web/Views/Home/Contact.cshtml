@@ -1,17 +1,62 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Team Fielder";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<div class="jumbotron container">
+    <h1>@ViewBag.Title</h1>
+</div>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.Partial("_LeftSideNavbar")
+        </div>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Plamena Miteva</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true">  admin@abv.bg</span>
+                        <div><span class="glyphicon glyphicon-home" aria-hidden="true"> https://github.com/PlamenaMiteva</span></div>
+                    </div>
+                </div>
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Anton Velikov</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true">  admin@abv.bg</span>
+                        <div><span class="glyphicon glyphicon-home" aria-hidden="true"> https://github.com/antataiv</span></div>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Pavel Shalev</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true">  admin@abv.bg</span>
+                        <div><span class="glyphicon glyphicon-home" aria-hidden="true"> https://github.com/pavel91</span></div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Ivan Kitukov</h3>
+                    </div>
+                    <div class="panel-body">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true">  admin@abv.bg</span>
+                        <div><span class="glyphicon glyphicon-home" aria-hidden="true"> https://github.com/fargo32</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

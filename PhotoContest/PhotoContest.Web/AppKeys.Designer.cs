@@ -61,38 +61,20 @@ namespace PhotoContest.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AxyLjLUX_zAAAAAAAAAADIeUEWhjBr45lCP5q7xtKJyAJbOgHS3MrSSVPMFw5I3y.
+        ///   Looks up a localized string similar to e1q5i2RZGujGxqC/dIDOAe0hesZrzzajuwHRqROySyIL2hT91em1oDyGuZgtHnhb9TXMfm37wwLPL0Tou96j4g==.
         /// </summary>
-        internal static string DropboxAccessTDropboxAccessToken {
+        internal static string PrimaryAccessKey {
             get {
-                return ResourceManager.GetString("DropboxAccessTDropboxAccessToken", resourceCulture);
+                return ResourceManager.GetString("PrimaryAccessKey", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 44jgmn7d9fk6dsp.
+        ///   Looks up a localized string similar to photocontest.
         /// </summary>
-        internal static string DropboxApiKey {
+        internal static string Storage_Account_Name {
             get {
-                return ResourceManager.GetString("DropboxApiKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to icch5f1x1ixs9go.
-        /// </summary>
-        internal static string DropboxApiSecret {
-            get {
-                return ResourceManager.GetString("DropboxApiSecret", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to PhotoContestImages_last.
-        /// </summary>
-        internal static string DropboxFolder {
-            get {
-                return ResourceManager.GetString("DropboxFolder", resourceCulture);
+                return ResourceManager.GetString("Storage Account Name", resourceCulture);
             }
         }
     }

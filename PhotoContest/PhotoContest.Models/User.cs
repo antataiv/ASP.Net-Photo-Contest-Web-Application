@@ -27,11 +27,11 @@
 
         public string ProfileImageUrl { get; set; }
 
-        public string ProfileImagePath { get; set; }
+        //public string ProfileImagePath { get; set; }
 
-        public string ThumbnailPath { get; set; }
+        //public string ThumbnailPath { get; set; }
 
-        public string ThumbnailUrl { get; set; }
+        //public string ThumbnailUrl { get; set; }
 
         public virtual ICollection<Image> Images
         {

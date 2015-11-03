@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using PhotoContest.Web.Models;
 using PhotoContest.Models;
-using PhotoContest.Web.Helpers;
+
 
 namespace PhotoContest.Web.Controllers
 {
@@ -19,12 +21,13 @@ namespace PhotoContest.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        protected static CloudBlobContainer imagesContainer;
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -36,9 +39,9 @@ namespace PhotoContest.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -122,7 +125,7 @@ namespace PhotoContest.Web.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -157,20 +160,26 @@ namespace PhotoContest.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (upload != null && upload.ContentLength > 0)
                 {
-                    var imagePaths = Helpers.UploadImages.UploadImage(user.UserName,upload, true);
-                    var profilImageUrl = Dropbox.Download(imagePaths[0], "Profile");
-                    var profilThumbnailUrl = Dropbox.Download(imagePaths[1], "Thumbnails");
+                    var credentials = new StorageCredentials(AppKeys.Storage_Account_Name, AppKeys.PrimaryAccessKey);
+                    var storageAccount = new CloudStorageAccount(credentials, true);
+                    var blobClient = storageAccount.CreateCloudBlobClient();
+                    imagesContainer = blobClient.GetContainerReference("images");
+                    CloudBlockBlob image = await this.UploadBlobAsync(upload);
+                    user.ProfileImageUrl = image.Uri.ToString();
 
-                    user.ProfileImagePath = imagePaths[0];
-                    user.ThumbnailPath = imagePaths[1];
-                    user.ProfileImageUrl = profilImageUrl;
-                    user.ThumbnailUrl = profilThumbnailUrl;
+                    //var imagePaths = Helpers.UploadImages.UploadImage(user.UserName,upload, true);
+                    //var profilImageUrl = Dropbox.Download(imagePaths[0], "Profile");
+                    //var profilThumbnailUrl = Dropbox.Download(imagePaths[1], "Thumbnails");
+                    //user.ProfileImagePath = imagePaths[0];
+                    //user.ThumbnailPath = imagePaths[1];
+                    //user.ProfileImageUrl = profilImageUrl;
+                    //user.ThumbnailUrl = profilThumbnailUrl;
                 }
                 result = await this.UserManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -415,6 +424,20 @@ namespace PhotoContest.Web.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        private async Task<CloudBlockBlob> UploadBlobAsync(HttpPostedFileBase imageFile)
+        {
+
+            string blobName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
+            var imageBlob = imagesContainer.GetBlockBlobReference(blobName);
+
+            using (var fileStream = imageFile.InputStream)
+            {
+                await imageBlob.UploadFromStreamAsync(fileStream);
+            }
+
+            return imageBlob;
         }
 
         protected override void Dispose(bool disposing)

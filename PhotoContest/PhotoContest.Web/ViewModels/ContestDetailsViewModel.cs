@@ -1,4 +1,6 @@
-﻿namespace PhotoContest.Web.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PhotoContest.Web.ViewModels
 {
     using AutoMapper;
     using PhotoContest.Common.Mappings;
@@ -13,10 +15,13 @@
 
         public string Name { get; set; }
 
+        [Display(Name="Category")]
         public string CategoryName { get; set; }
 
+        [Display(Name = "Creator")]
         public string CreatorName { get; set; }
 
+        [Display(Name = "# Images")]
         public int ParticipatingImages { get; set; }
 
         public Flag Flag { get; set; }

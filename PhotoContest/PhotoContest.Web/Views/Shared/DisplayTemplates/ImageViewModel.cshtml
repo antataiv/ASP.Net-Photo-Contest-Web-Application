@@ -3,26 +3,28 @@
 
 <div id="image-@Model.Id" class="col-sm-6 col-md-4">
     <div class="thumbnail" id="image-thumbnail">
-        <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
+        <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" style="300px; height=200px;"/></a>
+        
         <div class="caption">
             <span>@Html.LabelFor(m => m.User) :</span>
             @if (@Model.User == this.User.Identity.Name)
             {
-            <span>
-                @Html.ActionLink(@Model.User, "Details", "Profile"
+                <span>
+                    @Html.ActionLink(@Model.User, "Index", "Profile"
+            , null
+            , null)
+                </span>
+            }
+            else
+            {
+                <span>
+                    @Html.ActionLink(@Model.User, "Details", "Profile"
             , new
             {
                 userName = @Model.User
             }, null)
-            </span>
-            }
-            else
-            {
-            <span>
-                @Html.ActionLink(@Model.User, "Index", "Profile"
-            , null
-            , null)
-            </span>
+                </span>
+            
             }
 
         </div>

@@ -2,7 +2,9 @@
 
 <div>
     <h2>@Html.DisplayNameFor(x => x.Title) : @Html.DisplayFor(x => x.Title)</h2>
-    <img src="@Model.PictureUrl" alt="Alternate Text" />
+    <div class="thumbnail">
+        <img src="@Model.PictureUrl" alt="Alternate Text" />
+    </div>
     <p>@Html.DisplayNameFor(x => x.ContestName) : @Html.DisplayFor(x => x.ContestName)</p>
     <p>Upload By : @Html.DisplayFor(x => x.AuthorUserName)</p>
     <p>@Html.DisplayNameFor(x => x.PostedOn) : @Html.DisplayFor(x => x.PostedOn)</p>

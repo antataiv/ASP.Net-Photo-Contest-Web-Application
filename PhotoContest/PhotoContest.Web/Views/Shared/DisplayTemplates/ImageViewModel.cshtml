@@ -3,8 +3,14 @@
 <div id="image-@Model.Id" class="row">
     <div class="col-xs-6 col-md-3">
         <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
-        <div>@Html.LabelFor(m => m.User) : @Html.DisplayFor(m => m.User)</div>
-        <div><span id="image-rating">@Html.LabelFor(m => m.Rating) : @Html.DisplayFor(m => m.Rating)</span></div>
+        <div>
+            <span>@Html.LabelFor(m => m.User) :</span>
+            <span>@Html.DisplayFor(m => m.User)</span>
+        </div>
+        <div>
+            <span>@Html.LabelFor(m => m.Rating) :</span>
+            <span id="image-rating">@Html.DisplayFor(m => m.Rating)</span>
+        </div>
         <div id="vote-button">
             @if (this.Request.IsAuthenticated)
             {
@@ -17,8 +23,8 @@
                         using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
                         {
                             HttpMethod = "POST",
-                            InsertionMode = InsertionMode.Replace,
                             UpdateTargetId = "image-rating",
+                            InsertionMode = InsertionMode.Replace,
                             OnSuccess = "onVoteSuccess"
                         }))
                         {
@@ -35,8 +41,8 @@
                         using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
                         {
                             HttpMethod = "POST",
-                            InsertionMode = InsertionMode.Replace,
                             UpdateTargetId = "image-rating",
+                            InsertionMode = InsertionMode.Replace,
                             OnSuccess = "onVoteSuccess"
                         }))
                         {

@@ -102,7 +102,6 @@ namespace PhotoContest.Web.Controllers
                 var votesCount = image.Ratings.Sum(v => v.Value);
 
                 return this.RedirectToAction("Details", "Contest", new { id = image.ContestId });
-                //return this.Content(votesCount.ToString());
             }
 
             return new EmptyResult();

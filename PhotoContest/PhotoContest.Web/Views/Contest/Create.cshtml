@@ -28,7 +28,6 @@
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.CategoryId, (IEnumerable<SelectListItem>)ViewBag.Categories, new { @class = "form-control" })
             </div>
-            @Html.ValidationMessageFor(m => m.CategoryId)
         </div>
         <br />
         <div class="form-group" id="create-contest-form">

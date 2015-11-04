@@ -5,89 +5,133 @@
 }
 
 
-@*new version*@
-
-
-<h2>@ViewBag.Title</h2>
-
-<div>
-    <h3>Contest Status : @Model.Flag</h3>
-</div>
-
-@if (Model.Flag == PhotoContest.Models.Flag.Inactive && Model.CreatorName == this.User.Identity.Name)
-{
-    <div>
-        <p>To activate the Contest you have to add Prizes for every Winner!</p>
-    </div>
-}
-
-@if (Model.CreatorName == this.User.Identity.Name)
-{
-    if (this.ViewBag.NumOfPrizesInDB != null)
+<div class="jumbotron container">
+    <h2>@Model.Name</h2>
+    @if (Model.CreatorName == this.User.Identity.Name)
     {
-        if (Model.NumberOfPrizes != this.ViewBag.NumOfPrizesInDB)
+        if (this.ViewBag.NumOfPrizesInDB != null)
         {
-            @Html.ActionLink("Activate", "CreatePrizes", "Contest"
+            if (Model.NumberOfPrizes != this.ViewBag.NumOfPrizesInDB)
+            {
+                @Html.ActionLink("Activate", "CreatePrizes", "Contest"
             , new
             {
                 contestId = Model.Id,
                 numOfWinnersRequired = this.ViewBag.NumOfWinners,
                 leftForAdding = this.ViewBag.NumOfWinners
             },
-            new { @class = "btn btn-default" })
+            new { @class = "btn btn-default pull-right" })
+            }
         }
     }
-}
-
-<div>
-    <p>@Html.LabelFor(m => m.Name) : @Model.Name</p>
-    <p>@Html.LabelFor(m => m.CategoryName) : @Model.CategoryName</p>
-    <p>@Html.LabelFor(m => m.CreatorName) : @Model.CreatorName</p>
-    <p>@Html.LabelFor(m => m.Flag) : @Model.Flag</p>
-    <p>@Html.LabelFor(m => m.ParticipatingImages) : @Model.ParticipatingImages</p>
-    <p>@Html.LabelFor(m => m.Participants) : @Model.Participants</p>
-</div>
-
-<div>
-    @if (Model.Flag == PhotoContest.Models.Flag.Active && this.Request.IsAuthenticated)
+    @if (Model.Flag == PhotoContest.Models.Flag.Inactive && Model.CreatorName == this.User.Identity.Name)
     {
-        if (Model.ParticipationStrategy == "Open")
-        {
-            using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
-               {
-                   HttpMethod = "POST"
-               },
-               new { @class = "btn btn-default" }))
-            {
-                @Html.AntiForgeryToken()
-                <input type="submit" name="name" value="Participate" class="btn btn-default" />
-            }
-        }
-        else if (Model.ParticipationStrategy == "Closed")
-        {
-            using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
-               {
-                   HttpMethod = "POST"
-               },
-               new { @class = "btn btn-default" }))
-            {
-                @Html.AntiForgeryToken()
-                <input type="submit" name="name" value="Apply for contest" class="btn btn-default" />
-            }
-        }
+        <div class="pull-right" style="color:white">
+            <p>To activate the contest you have to add prizes for every winner!&nbsp;</p>
+        </div>
     }
 </div>
+<div class="container col-xs-12 col-sm-12">
+    @Html.Partial("_LeftSideNavbar")
+    <div class="well col-xs-12 col-sm-10" id="contest-details-well">
+        <div class="row">
+            @if (Model.Flag.ToString() == "Active")
+            {
+                <button class="btn btn-default" id="details-button-1" type="button">
+                    Active <span class="badge"><span class="glyphicon glyphicon-flag" aria-hidden="true" style="color: yellowgreen"></span></span>
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-default" id="details-button" type="button">
+                    Inactive <span class="badge"><span class="glyphicon glyphicon-flag" aria-hidden="true" style="color: red"></span></span>
+                </button>
+            }
+            <button class="btn btn-default" id="details-button" type="button">
+                @Html.LabelFor(m => m.CategoryName) <span class="badge">@Model.CategoryName</span>
+            </button>
+            <button class="btn btn-default" id="details-button" type="button">
+                @Html.LabelFor(m => m.CreatorName) <span class="badge">@Model.CreatorName</span>
+            </button>
+            <button class="btn btn-default" id="details-button" type="button">
+                @Html.LabelFor(m => m.ParticipatingImages) <span class="badge">@Model.ParticipatingImages</span>
+            </button>
+            <button class="btn btn-default" id="details-button" type="button">
+                @Html.LabelFor(m => m.Participants) <span class="badge">@Model.Participants</span>
+            </button>
+        </div>
+    </div>
+    <div class="well col-xs-12 col-sm-10" style="margin-left: 20px;">
+        <div class="row">
+            @if (Model.Images.Any())
+            {
+                @Html.DisplayFor(i => i.Images)
+            }
+            else
+            {
+                <span>There are no images for this contest at the moment.</span>
+            }
 
-<div>
-    <div id="images">
-        @if (Model.Images.Any())
-        {
-            @Html.DisplayFor(i => i.Images)
-        }
-        else
-        {
-            <span>The are no images for this contest at the moment.KUF</span>
-        }
+        </div>
+    </div>
+    <div class="well col-xs-12 col-sm-10" style="margin-left: 175px;">
+        <div class="row">
+            @if (Model.Flag == PhotoContest.Models.Flag.Active)
+            {
+                if (Model.ParticipatingUsers.Contains(this.User.Identity.GetUserId()) || Model.ParticipationStrategy == "Open")
+                {
+                    using (Ajax.BeginForm("UploadImage", "Contest", new { contestId = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.InsertAfter,
+                        UpdateTargetId = "images"
+                    },
+                        new { @class = "btn btn-default", @id = "contest-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary()
+                        <input type="file" class="btn btn-default" name="upload" value="" />
+                        <div class="form-group">
+                            <label for="title" class="control-label col-sm-4 pull-left">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter title">
+                            <p id="demo" style="color:red"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="control-label col-sm-4 pull-left">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter title">
+                        </div>
+                        <input type="submit" value="Upload Image" onclick="validateFunction()" />
+                    }
+                }
+                else if (Model.ParticipationStrategy == "Closed" && this.Request.IsAuthenticated)
+                {
+                    using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
+                    {
+                        HttpMethod = "POST"
+                    },
+                    new { @class = "btn btn-default" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="submit" name="name" value="Apply for contest" class="btn btn-default" />
+                    }
+                }
+            }
+        </div>
     </div>
 </div>
 
+
+@section scripts{
+    <script>
+        function validateFunction() {
+            var x, text;
+            x = document.getElementById("title").value;
+            if (x == "") {
+                text = "Please select a title";
+            } else {
+                text = "";
+            }
+            document.getElementById("demo").innerHTML = text;
+        }
+    </script>
+}

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using PhotoContest.Common.Mappings;
-using PhotoContest.Models;
-using System.ComponentModel.DataAnnotations;
-
-namespace PhotoContest.Web.Models.BindingModels
+﻿namespace PhotoContest.Web.Models.BindingModels
 {
+    using PhotoContest.Common.Mappings;
+    using PhotoContest.Models;
+    using System.ComponentModel.DataAnnotations;
     public class CreatePrizesBindingModel : IMapTo<Prize>
     {
         public int Id { get; set; }
@@ -18,7 +13,7 @@ namespace PhotoContest.Web.Models.BindingModels
 
         public int ContestId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Position can not be empty.")]
         public int Position { get; set; }
 
     }

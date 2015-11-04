@@ -1,19 +1,16 @@
-﻿using PhotoContest.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using PhotoContest.Common.Mappings;
-using System.Web;
-
-namespace PhotoContest.Web.Models.BindingModels
+﻿namespace PhotoContest.Web.Models.BindingModels
 {
+    using PhotoContest.Models;
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using PhotoContest.Common.Mappings;
+
     public class CommentBindingModel : IMapTo<Comment>
     {
         public string UserId { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "You can not post empty comment.")]
+        [MaxLength(255, ErrorMessage = "Your post can be maximum {1} symbols long.")]
         public string Content { get; set; }
 
         [Required]
@@ -22,6 +19,6 @@ namespace PhotoContest.Web.Models.BindingModels
         [Required]
         public int ImageId { get; set; }
 
-        
+
     }
 }

@@ -87,3 +87,31 @@ textarea {
     margin-left: 210px;
 }
 
+#contest-details-well {
+    margin-left: 20px;
+}
+#contest-details-well .badge {
+    background-color:white;
+    color: black;
+    margin-top: 5px;
+}
+#details-button {
+    width: 175px;
+    height: 50px;
+}
+#details-button-1 {
+    margin-left: 10px;
+    width: 175px;
+    height: 50px;
+}
+#vote {
+    margin-left: 100px;
+    margin-bottom: 10px;
+}
+#image-thumbnail {
+    height: 310px;
+}
+#contest-form {
+    width: 500px;
+    margin-left: 10px;
+}

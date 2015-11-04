@@ -1,4 +1,6 @@
-﻿namespace PhotoContest.Web.Controllers
+﻿using PhotoContest.Models.Enums;
+
+namespace PhotoContest.Web.Controllers
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -197,23 +199,42 @@
         }
 
 
-        [HttpPost]
+        [HttpGet]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Participate(int contestId)
+        //[ValidateAntiForgeryToken]
+        public ActionResult Participate(string userId,int contestId)
         {
-            var contest = this.Data.Contests
-                                .All()
+            var contest = this.Data.Contests.All()
                                 .FirstOrDefault(c => c.Id == contestId);
-
+            
+            
+            //var isItLast = contest.ParticipantsLimit - 1 == contest.Participants.Count;
+         
             var loggedUserId = this.User.Identity.GetUserId();
-            var loggedUser = this.Data.Users
+            var userToAdd = this.Data.Users
                             .All()
                             .FirstOrDefault(u => u.Id == loggedUserId);
 
+            if (userId != null)
+            {
+                userToAdd = this.Data.Users.Find(userId);
+            }
+
             if (contest != null)
             {
-                contest.Participants.Add(loggedUser);
+                //if (contest.Participants.Contains(userToAdd))
+                //{
+                //    this.ViewBag.AlreadyParticipatesMessage = "This user already participates";
+
+                //    return this.Content("This user already participates");
+                //}
+                contest.Participants.Add(userToAdd);
+
+                if (IsContestFinished(contest))
+                {                 
+                    contest.Flag = Flag.Past;                 
+                }
+
                 this.Data.SaveChanges();
 
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
@@ -234,6 +255,28 @@
             }
 
             return imageBlob;
+        }
+
+        private bool IsContestFinished(Contest contest)
+        {
+            if (contest.DeadlineStrategy == DeadlineStrategy.ByTime)
+            {
+                var isOver = DateTime.Now.Date >= contest.EndDate;
+                if (isOver)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                var isFull = contest.ParticipantsLimit == contest.Participants.Count;
+                if (isFull)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

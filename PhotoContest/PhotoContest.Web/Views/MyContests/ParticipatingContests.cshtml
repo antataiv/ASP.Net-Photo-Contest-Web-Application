@@ -6,7 +6,15 @@
 }
 
 <div class="row">
-    @Html.DisplayFor(x => x)
+    @if (Model.Any())
+    {
+        @Html.DisplayFor(x => x)
+    }
+    else
+    {
+        <h2>You still dont participate in contest.</h2>
+        <h2>You can see active contents @Html.ActionLink("here", "Index", "Home")</h2>
+    }
 </div>
 @Html.PagedListPager(Model, page => Url.Action("ParticipatingContests",
     new { page }))

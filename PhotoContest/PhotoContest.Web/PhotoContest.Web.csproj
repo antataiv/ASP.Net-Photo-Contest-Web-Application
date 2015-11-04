@@ -364,6 +364,9 @@
     <Content Include="Views\MyContests\Finalize.cshtml" />
     <Content Include="Views\Contest\CreatePrizes.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\PrizeViewModel.cshtml" />
+    <Content Include="Views\MyContests\AddParticipants.cshtml" />
+    <Content Include="Views\MyContests\_SearchFormPartial.cshtml" />
+    <Content Include="Views\MyContests\_SearchResultsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

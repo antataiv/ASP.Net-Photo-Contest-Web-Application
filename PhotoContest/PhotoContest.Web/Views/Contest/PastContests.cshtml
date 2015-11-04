@@ -9,7 +9,15 @@
 
 
 <div class="row">
-    @Html.DisplayFor(x => x)
+    @if (Model.Any())
+    {
+        @Html.DisplayFor(x => x)
+    }
+    else
+    {
+        <h2>No past contests</h2>
+    }
+    
 </div>
 @Html.PagedListPager(Model, page => Url.Action("PastContests",
     new { page }))

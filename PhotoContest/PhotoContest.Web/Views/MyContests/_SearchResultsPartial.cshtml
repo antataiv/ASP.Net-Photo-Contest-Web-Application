@@ -1,0 +1,30 @@
+﻿@model IEnumerable<PhotoContest.Web.ViewModels.UserViewModel>
+
+@if (!Model.Any())
+{
+    <h3 class="text-error">No items matched your search query!</h3>
+}
+else
+{
+    foreach (var user in Model)
+    {
+        // display search results
+
+        <div class="col">
+            <div class="well well-sm-5">
+                <div>
+                    @user.Username
+                </div>
+
+                <div class="btn-group">
+                    <p>@Html.ActionLink("Add user to contest", "Participate", "Contest", new {userId = user.Id, contestId = Url.RequestContext.RouteData.Values["id"]}, new {@class = "btn btn-default"})</p>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+
+}

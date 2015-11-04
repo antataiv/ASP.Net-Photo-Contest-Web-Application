@@ -49,6 +49,7 @@
         //GET Contest
         public ActionResult Details(int id)
         {
+            //New Version
             var contest = this.Data.Contests
                                 .All()
                                 .FirstOrDefault(c => c.Id == id);
@@ -63,6 +64,10 @@
                                                     .Select(u => u.Author.Id)
                                                     .Distinct()
                                                     .Count();
+
+            var numberOfPrizesInDB = this.Data.Prizes.All().Where(i => i.ContestId == contestViewModel.Id).Count();
+            this.ViewBag.NumOfPrizesInDB = numberOfPrizesInDB;
+            this.ViewBag.NumOfWinners = contestViewModel.NumberOfPrizes;
 
             return this.View(contestViewModel);
         }
@@ -93,6 +98,50 @@
             this.LoadCategories();
 
             return this.View(model);
+        }
+
+        //new version
+        [HttpGet]
+        public ActionResult CreatePrizes(int contestId, int numOfWinnersRequired, int leftForAdding)
+        {
+            this.ViewBag.leftForAdding = leftForAdding;
+            this.ViewBag.ContestId = contestId;
+            this.ViewBag.numOfWinnersRequired = numOfWinnersRequired;
+            return this.View();
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult CreatePrizes(CreatePrizesBindingModel prizesModel, int contestId, int numOfWinnersRequired, int leftForAdding)
+        {
+            if (prizesModel != null && this.ModelState.IsValid)
+            {
+                var prize = new Prize()
+                {
+                    ContestId = contestId,
+                    PrizeName = prizesModel.PrizeName,
+                    Position = leftForAdding
+                };
+                this.Data.Prizes.Add(prize);
+                this.Data.SaveChanges();
+            }
+            int numOfWinnersInDb = this.Data.Prizes.All().Where(p => p.ContestId == contestId).Count();
+
+            if (numOfWinnersInDb < numOfWinnersRequired)
+            {
+                //If all winners prizes are'nt added to DB
+                leftForAdding = numOfWinnersRequired - numOfWinnersInDb;
+                this.ViewBag.leftForAdding = leftForAdding;
+                return this.RedirectToAction("CreatePrizes", "Contest", new { contestId = contestId, numOfWinnersRequired = numOfWinnersRequired, leftForAdding = leftForAdding });
+            }
+            else
+            {
+                //If all winners prizes are added to DB
+                var currentContest = this.Data.Contests.All().FirstOrDefault(c => c.Id == contestId);
+                currentContest.Flag = Flag.Active;
+                this.Data.SaveChanges();
+                return this.RedirectToAction("Details", "Contest", new { id = contestId });
+            }
         }
 
 

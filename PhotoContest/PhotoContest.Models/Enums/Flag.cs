@@ -2,7 +2,10 @@
 {
     public enum Flag
     {
+        //Novata
+        Inactive,
         Active,
-        Inactive
+        Past
+        
     }
 }

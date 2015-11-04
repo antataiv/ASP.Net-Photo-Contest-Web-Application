@@ -263,6 +263,7 @@
     <Compile Include="Models\BindingModels\CommentBindingModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BindingModels\CreateContestBindingModel.cs" />
+    <Compile Include="Models\BindingModels\CreatePrizesBindingModel.cs" />
     <Compile Include="Models\BindingModels\EditContestBindingModel.cs" />
     <Compile Include="Models\BindingModels\ImageBindingModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -283,7 +284,6 @@
     <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\UserProfileViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
-    <Compile Include="ViewModels\WinnerImagesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -362,7 +362,8 @@
     <Content Include="Views\Image\Details.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CommentViewModel.cshtml" />
     <Content Include="Views\MyContests\Finalize.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\WinnerImagesViewModel.cshtml" />
+    <Content Include="Views\Contest\CreatePrizes.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\PrizeViewModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

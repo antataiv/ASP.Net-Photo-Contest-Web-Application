@@ -4,7 +4,40 @@
     ViewBag.Title = "Contest Details";
 }
 
+
+@*new version*@
+
+
 <h2>@ViewBag.Title</h2>
+
+<div>
+    <h3>Contest Status : @Model.Flag</h3>
+</div>
+
+@if (Model.Flag == PhotoContest.Models.Flag.Inactive && Model.CreatorName == this.User.Identity.Name)
+{
+    <div>
+        <p>To activate the Contest you have to add Prizes for every Winner!</p>
+    </div>
+}
+
+@if (Model.CreatorName == this.User.Identity.Name)
+{
+    if (this.ViewBag.NumOfPrizesInDB != null)
+    {
+        if (Model.NumberOfPrizes != this.ViewBag.NumOfPrizesInDB)
+        {
+            @Html.ActionLink("Activate", "CreatePrizes", "Contest"
+            , new
+            {
+                contestId = Model.Id,
+                numOfWinnersRequired = this.ViewBag.NumOfWinners,
+                leftForAdding = this.ViewBag.NumOfWinners
+            },
+            new { @class = "btn btn-default" })
+        }
+    }
+}
 
 <div>
     <p>@Html.LabelFor(m => m.Name) : @Model.Name</p>

@@ -1,0 +1,27 @@
+﻿@model PhotoContest.Web.Models.BindingModels.CreatePrizesBindingModel
+
+<h4>Add Prize for @this.ViewBag.leftForAdding Place:</h4>
+
+@using (Ajax.BeginForm("CreatePrizes", "Contest", new { contestId = this.ViewBag.ContestId, numOfWinnersRequired = this.ViewBag.numOfWinnersRequired, leftForAdding = this.ViewBag.leftForAdding }, new AjaxOptions()
+{
+    HttpMethod = "POST",
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <form class="form-horizontal" role="form">
+        <div class="form-group" id="create-contest-form">
+            @Html.LabelFor(m => m.PrizeName, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PrizeName, new { @class = "form-control" })
+            </div>
+            @Html.ValidationMessageFor(m => m.PrizeName)
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" name="name" value="Add Prize" />
+            </div>
+        </div>
+    </form>
+}

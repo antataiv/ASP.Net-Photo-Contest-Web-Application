@@ -104,7 +104,7 @@ namespace PhotoContest.Web.Controllers
             return this.RedirectToAction("Index", "MyContests");
         }
 
-
+        //new version
         public ActionResult Finalize(int id)
         {
             var contest = this.Data.Contests.Find(id);
@@ -115,24 +115,76 @@ namespace PhotoContest.Web.Controllers
             }
 
             var winnersCount = contest.NumberOfPrizes.GetValueOrDefault();
-            //var winners = this.Data.Contests.All()
-            //    .Take(winnersCount)
-            //    .ProjectTo<PrizeViewModel>();
 
-            var winners = this.Data.Images
+            var winnersNames = this.Data.Images
                 .All()
-                .Where(i=>i.ContestId==id)
-                .OrderByDescending(i=>i.Ratings.Sum(r=>r.Value))
+                .Where(i => i.ContestId == id)
+                .OrderByDescending(i => i.Ratings.Sum(r => r.Value))
                 .Take(winnersCount)
-                .Project()
-                .To<WinnerImagesViewModel>().ToList();
+                .Select(i => i.Author)
+                .ToList();
 
-            contest.Flag = Flag.Inactive;
+            var winnerPrizes = this.Data.Prizes
+                .All()
+                .Where(p => p.ContestId == id)
+                .OrderBy(p => p.Position)
+                .ToList();
+
+            int counter = 0;
+            foreach (var item in winnerPrizes)
+            {
+                if (counter>= winnersNames.Count())
+                {
+                    break;
+                }
+                Prize currentPrize = this.Data.Prizes.All().FirstOrDefault(p => p.Id == item.Id);
+                currentPrize.Winner = winnersNames[counter];
+                counter++;
+            }
+
+            contest.Flag = Flag.Past;
             this.Data.SaveChanges();
 
+            var PrizesWithWinners = this.Data.Prizes
+                .All()
+                .Where(p => p.ContestId == id)
+                .OrderBy(p => p.Position)
+                .Project()
+                .To<PrizeViewModel>()
+                .ToList();
             //return this.RedirectToAction("Index", "MyContests");
 
-            return this.View(winners);
+            return this.View(PrizesWithWinners);
         }
+
+        //public ActionResult Finalize(int id)
+        //{
+        //    var contest = this.Data.Contests.Find(id);
+
+        //    if (contest == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+        //    }
+
+        //    var winnersCount = contest.NumberOfPrizes.GetValueOrDefault();
+        //    //var winners = this.Data.Contests.All()
+        //    //    .Take(winnersCount)
+        //    //    .ProjectTo<PrizeViewModel>();
+
+        //    var winners = this.Data.Images
+        //        .All()
+        //        .Where(i=>i.ContestId==id)
+        //        .OrderByDescending(i=>i.Ratings.Sum(r=>r.Value))
+        //        .Take(winnersCount)
+        //        .Project()
+        //        .To<WinnerImagesViewModel>().ToList();
+
+        //    contest.Flag = Flag.Inactive;
+        //    this.Data.SaveChanges();
+
+        //    //return this.RedirectToAction("Index", "MyContests");
+
+        //    return this.View(winners);
+        //}
     }
 }

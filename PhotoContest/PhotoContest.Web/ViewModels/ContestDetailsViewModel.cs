@@ -8,6 +8,7 @@
 
     public class ContestDetailsViewModel : IMapFrom<Contest>, IHaveCustomMappings
     {
+        //New Version
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -25,6 +26,8 @@
         public int Participants { get; set; }
 
         public string ParticipationStrategy { get; set; }
+
+        public int? NumberOfPrizes { get; set; }
 
         public IEnumerable<ImageViewModel> Images { get; set; }
 

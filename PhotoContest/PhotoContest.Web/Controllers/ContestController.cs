@@ -18,6 +18,8 @@ namespace PhotoContest.Web.Controllers
     using System.Web.Mvc;
     using PagedList;
     using System.Net;
+    using Microsoft.AspNet.SignalR;
+    using PhotoContest.Web.Hubs;
 
     public class ContestController : BaseController
     {
@@ -33,14 +35,27 @@ namespace PhotoContest.Web.Controllers
                 .All()
                 .OrderBy(x => x.StartDate)
                 .Project().To<PastContestViewModel>()
-                .Where(c => c.Flag.Equals("Inactive"))
+                .Where(c => c.Flag.Equals("Past"))
                 .ToPagedList(page ?? 1, 3);
 
             return this.View(inactiveContests);
 
         }
 
+        public ActionResult ContestsByUser(string userName, int? page)
+        {
+            var usersContests = this.Data.Contests
+                .All()
+                .Where(uc => uc.Creator.UserName == userName)
+                .OrderByDescending(uc => uc.StartDate)
+                .Project()
+                .To<ContestViewModelIndex>().ToPagedList(page ?? 1, 3);
 
+            this.ViewBag.userName = userName;
+            return this.View(usersContests);
+        }
+
+        [System.Web.Mvc.Authorize]
         public ActionResult Create()
         {
             this.LoadCategories();
@@ -62,7 +77,7 @@ namespace PhotoContest.Web.Controllers
 
             contestViewModel.Participants = this.Data.Images
                                                     .All()
-                                                    .Where(img => img.ContestId == id)
+                                                    .Where(img => img.ContestId == id && img.isDeleated == false)
                                                     .Select(u => u.Author.Id)
                                                     .Distinct()
                                                     .Count();
@@ -75,26 +90,31 @@ namespace PhotoContest.Web.Controllers
         }
 
         [HttpPost]
+        [System.Web.Mvc.Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateContestBindingModel model)
         {
             if (model != null && this.ModelState.IsValid)
             {
-                if (model != null && this.ModelState.IsValid)
+                var loggedUserId = this.User.Identity.GetUserId();
+                var newContest = Mapper.Map<Contest>(model);
+                newContest.StartDate = DateTime.Now;
+                newContest.CreatorId = loggedUserId;
+
+                if (model.RewardStrategy == RewardStrategy.One)
                 {
-                    var newContest = Mapper.Map<Contest>(model);
-                    newContest.StartDate = DateTime.Now;
-                    newContest.CreatorId = this.User.Identity.GetUserId();
-                    if (model.RewardStrategy == RewardStrategy.One)
-                    {
-                        newContest.NumberOfPrizes = 1;
-                    }
-
-                    this.Data.Contests.Add(newContest);
-                    this.Data.SaveChanges();
-
-                    return this.RedirectToAction("Details", "Contest", new { newContest.Id });
+                    newContest.NumberOfPrizes = 1;
                 }
+
+                var creator = this.Data.Users
+                                    .All()
+                                    .FirstOrDefault(u => u.Id == loggedUserId);
+
+                this.Data.Contests.Add(newContest);
+                newContest.Participants.Add(creator);
+                this.Data.SaveChanges();
+
+                return this.RedirectToAction("Details", "Contest", new { newContest.Id });
             }
 
             this.LoadCategories();
@@ -103,7 +123,7 @@ namespace PhotoContest.Web.Controllers
         }
 
         //new version
-        [HttpGet]
+        [System.Web.Mvc.Authorize]
         public ActionResult CreatePrizes(int contestId, int numOfWinnersRequired, int leftForAdding)
         {
             this.ViewBag.leftForAdding = leftForAdding;
@@ -112,8 +132,9 @@ namespace PhotoContest.Web.Controllers
             return this.View();
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
+        [System.Web.Mvc.Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult CreatePrizes(CreatePrizesBindingModel prizesModel, int contestId, int numOfWinnersRequired, int leftForAdding)
         {
             if (prizesModel != null && this.ModelState.IsValid)
@@ -142,6 +163,9 @@ namespace PhotoContest.Web.Controllers
                 var currentContest = this.Data.Contests.All().FirstOrDefault(c => c.Id == contestId);
                 currentContest.Flag = Flag.Active;
                 this.Data.SaveChanges();
+
+                SendContestCreatedNotification(string.Format("New contest \"{0}\" has been created.", currentContest.Name));
+
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
             }
         }
@@ -159,7 +183,7 @@ namespace PhotoContest.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadImage(ImageBindingModel model, int contestId)
         {
@@ -199,15 +223,14 @@ namespace PhotoContest.Web.Controllers
         }
 
 
+
         [HttpGet]
-        [Authorize]
-        //[ValidateAntiForgeryToken]
+        [System.Web.Mvc.Authorize]
         public ActionResult Participate(string userId,int contestId)
         {
             var contest = this.Data.Contests.All()
                                 .FirstOrDefault(c => c.Id == contestId);
-            
-            
+                        
             //var isItLast = contest.ParticipantsLimit - 1 == contest.Participants.Count;
          
             var loggedUserId = this.User.Identity.GetUserId();
@@ -277,6 +300,13 @@ namespace PhotoContest.Web.Controllers
             }
 
             return false;
+        }
+
+        private void SendContestCreatedNotification(string message)
+        {
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationsHub>();
+            hubContext.Clients.All.receiveNotification(message);
+
         }
     }
 }

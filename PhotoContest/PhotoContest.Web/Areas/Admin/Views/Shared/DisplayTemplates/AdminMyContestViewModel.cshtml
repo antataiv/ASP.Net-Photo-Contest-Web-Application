@@ -1,0 +1,34 @@
+﻿@model PhotoContest.Web.ViewModels.MyContestsViewModel
+@{
+    ViewBag.Title = "MyContestsViewModel";
+}
+
+
+<div class="well well-lg">
+    <div class="row">
+        <span>@Model.Name</span>
+
+        <div class="pull-right">
+            @if (@Model.Flag.ToString() == "Active")
+            {
+                <mark>Active</mark>
+                <div class="btn-group">
+                    <p>@Html.ActionLink("Update-KUF!", "Edit", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
+                </div>
+                <div class="btn-group">
+                    <p>@Html.ActionLink("Dismiss", "DismissContest", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
+                </div>
+                <div class="btn-group">
+                    <p>@Html.ActionLink("Finalize", "Finalize", "MyContests", new { id = Model.Id ,area=""}, new { @class = "btn btn-default" })</p>
+                </div>
+            }
+            else
+            {
+                <mark>Inactive</mark>
+                <div>
+                    <p>Winner: </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

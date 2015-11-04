@@ -35,6 +35,27 @@ namespace PhotoContest.Web.Controllers
             return View(myImages);
         }
 
+        public ActionResult Erase(int imageId)
+        {
+            var image = this.Data.Images.All().FirstOrDefault(i => i.Id == imageId);
+            image.isDeleated = true;
+            this.Data.SaveChanges();
+
+            //redirect to Contest/Details/id
+            return this.RedirectToAction("Details", "Contest", new { id = image.ContestId });
+        }
+
+        public ActionResult ImagesByUser(string userName,int? page)
+        {
+            var myImages = this.Data.Images.All().Where(i => i.Author.UserName.Equals(userName)).OrderBy(i => i.PostedOn)
+                            .Project()
+                            .To<MyImagesViewModel>()
+                            .ToPagedList(page ?? 1, 6);
+            this.ViewBag.userName = userName;
+
+            return View(myImages);
+        }
+
         public ActionResult Details(int Id)
         {
             var image = this.Data.Images.All().Where(i => i.Id == Id).Project().To<ImageDetailsViewModel>().FirstOrDefault();

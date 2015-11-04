@@ -1,0 +1,18 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<PhotoContest.Web.ViewModels.ContestViewModelIndex>
+
+@{
+    ViewBag.Title = "All User's Contests";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div class="row">
+    @Html.DisplayFor(x => x)
+</div>
+@Html.PagedListPager(Model, page => Url.Action("ContestsByUser",
+    new { page }))
+<div class="row">
+    @Html.ActionLink("Back", "Details", "Profile", new { userName = this.ViewBag.userName}, new { @class = "btn btn-default" })
+</div>

@@ -1,19 +1,43 @@
 ﻿@model PhotoContest.Web.ViewModels.ImageViewModel
 @using Microsoft.AspNet.Identity
 
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail" id="image-thumbnail">
-            <a href="@Url.Action("Details", "Image", new {id = @Model.Id})"><img src="@Model.PictureUrl" class="thumbnail" /></a>
-            <div class="caption">
-                <span>@Html.LabelFor(m => m.User) :</span>
-                <span>@Html.DisplayFor(m => m.User)</span>
-                <div>
-                    <span>@Html.LabelFor(m => m.Rating) :</span>
-                    <span id="image-rating">@Html.DisplayFor(m => m.Rating)</span>
-                </div>
-            </div>
-            <div id="vote-button">
-                @if (this.Request.IsAuthenticated)
+<div id="image-@Model.Id" class="col-sm-6 col-md-4">
+    <div class="thumbnail" id="image-thumbnail">
+        <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
+        <div class="caption">
+            <span>@Html.LabelFor(m => m.User) :</span>
+            @if (@Model.User == this.User.Identity.Name)
+            {
+            <span>
+                @Html.ActionLink(@Model.User, "Details", "Profile"
+            , new
+            {
+                userName = @Model.User
+            }, null)
+            </span>
+            }
+            else
+            {
+            <span>
+                @Html.ActionLink(@Model.User, "Index", "Profile"
+            , null
+            , null)
+            </span>
+            }
+
+        </div>
+        <div>
+            <span>@Html.LabelFor(m => m.Rating) :</span>
+            <span id="image-rating">@Html.DisplayFor(m => m.Rating)</span>
+        </div>
+        @if (this.User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Erase picture", "Erase", "Image", new { imageId = Model.Id }, new { @class = "btn btn-default" });
+        }
+        <div id="vote-button">
+            @if (this.Request.IsAuthenticated)
+            {
+                if (Model.VotingStrategy == "Closed")
                 {
                     if (Model.VotingStrategy == "Closed")
                     {
@@ -30,7 +54,7 @@
                             }))
                             {
                                 @Html.AntiForgeryToken()
-    <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
+                                <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
                             }
                         }
                     }
@@ -48,15 +72,15 @@
                             }))
                             {
                                 @Html.AntiForgeryToken()
-                                 <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
+                                <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
                             }
                         }
                     }
                 }
-            </div>
+            }
         </div>
     </div>
-
+</div>
 
 
 @section scripts{

@@ -9,6 +9,7 @@ using AutoMapper.QueryableExtensions;
 using PhotoContest.Web.ViewModels;
 using AutoMapper;
 using PhotoContest.Common.Mappings;
+using PhotoContest.Models;
 
 namespace PhotoContest.Web.Controllers
 {
@@ -40,6 +41,28 @@ namespace PhotoContest.Web.Controllers
             profile.MyContests = myContests;
 
             this.ViewBag.NumOfMyContests = this.Data.Contests.All().Where(c => c.CreatorId.Equals(userId)).Count();
+
+            return View(profile);
+        }
+
+        public ActionResult Details(string userName)
+        {
+            var profileInfo = this.Data.Users
+                .All()
+                .Where(u => u.UserName.Equals(userName))
+                .ProjectTo<UserProfileViewModel>().FirstOrDefault();
+
+            var myContests = this.Data.Contests
+                .All()
+                .Where(c => c.Creator.UserName == userName && c.Flag==Flag.Active)
+                .OrderByDescending(c => c.StartDate)
+                .ProjectTo<MyContestsViewModel>().ToList();
+
+            var profile = new ProfileViewModel();
+            profile.UserProfileViewModel = profileInfo;
+            profile.MyContests = myContests;
+
+            this.ViewBag.NumOfMyContests = this.Data.Contests.All().Where(c => c.Creator.UserName.Equals(userName)).Count();
 
             return View(profile);
         }

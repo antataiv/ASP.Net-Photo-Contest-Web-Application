@@ -39,7 +39,9 @@ namespace PhotoContest.Web.ViewModels
         public void CreateMappings(IConfiguration configuration)
         {
             configuration.CreateMap<Contest, ContestDetailsViewModel>()
-                .ForMember(m => m.ParticipatingImages, conf => conf.MapFrom(i => i.Images.Count));
+                .ForMember(m => m.Images, conf => conf.MapFrom(i => i.Images.Where(f => f.isDeleated == false)));
+            configuration.CreateMap<Contest, ContestDetailsViewModel>()
+                .ForMember(m => m.ParticipatingImages, conf => conf.MapFrom(i => i.Images.Where(f=>f.isDeleated==false).Count()));
             configuration.CreateMap<Contest, ContestDetailsViewModel>()
                 .ForMember(m => m.Participants, conf => conf.MapFrom(p => p.Participants.Count));
             configuration.CreateMap<Contest, ContestDetailsViewModel>()

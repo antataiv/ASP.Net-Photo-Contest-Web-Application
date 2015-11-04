@@ -1,0 +1,34 @@
+﻿@model PhotoContest.Web.ViewModels.ProfileViewModel
+@{
+    ViewBag.Title = "My Profile";
+}
+<div class="jumbotron container">
+    @*<img src="@Model.UserProfileViewModel.ProfileImageUrl" alt="profile-image"/>*@
+    <div class="row">
+        <div class="col-md-6">
+            <img src="~/Content/profile-image-default.png" class="img-circle" alt="profile-image" />
+        </div>
+        <div class="col-md-6">
+            <h2>@Model.UserProfileViewModel.UserName</h2>
+            <h3><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> @Model.UserProfileViewModel.Email</h3>
+        </div>
+    </div>
+    <div class="pull-right">
+        @Html.ActionLink(
+            @Model.UserProfileViewModel.UserName + "'s Contests",
+            "ContestsByUser",
+            "Contest",
+            new { userName = @Model.UserProfileViewModel.UserName },
+            new { @class = "btn btn-default" }
+            )
+        @Html.ActionLink(@Model.UserProfileViewModel.UserName + "'s Images",
+            "ImagesByUser",
+            "Image",
+            new { userName = @Model.UserProfileViewModel.UserName },
+            new { @class = "btn btn-default" })
+    </div>
+</div>
+<div class="col">
+    @Html.DisplayFor(model => model.MyContests)
+</div>
+

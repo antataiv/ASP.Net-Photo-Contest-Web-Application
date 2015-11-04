@@ -34,6 +34,8 @@
 
         public virtual Contest Contest { get; set; }
 
+        public bool isDeleated { get; set; }
+
         //[Required]
         //public string AuthorId { get; set; }
 

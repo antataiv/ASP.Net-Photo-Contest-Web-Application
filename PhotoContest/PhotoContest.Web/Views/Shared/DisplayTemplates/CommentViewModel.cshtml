@@ -1,7 +1,25 @@
 ﻿@model PhotoContest.Web.ViewModels.CommentViewModel
 
 <div class="body-content">
-    <p>Posted By : @Html.DisplayFor(x => x.AuthorUserName)</p>
+        @if (@Model.AuthorUserName == this.User.Identity.Name)
+        {
+            <p>
+                Posted By : @Html.ActionLink(@Model.AuthorUserName, "Index", "Profile"
+            , null
+            , null)
+            </p>
+    }
+    else
+    {
+        <p>
+            Posted By : @Html.ActionLink(@Model.AuthorUserName, "Details", "Profile"
+            , new
+            {
+                userName = @Model.AuthorUserName
+            }, null)
+        </p>
+    }
+    
     <p>@Html.DisplayNameFor(x=>x.PostedOn) : @Html.DisplayFor(x => x.PostedOn)</p>
     <p>@Html.DisplayFor(x=>x.Content)</p>
 </div>

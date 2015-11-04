@@ -31,13 +31,25 @@
                 .All()
                 .OrderBy(x => x.StartDate)
                 .Project().To<PastContestViewModel>()
-                .Where(c => c.Flag.Equals("Inactive"))
+                .Where(c => c.Flag.Equals("Past"))
                 .ToPagedList(page ?? 1, 3);
 
             return this.View(inactiveContests);
 
         }
 
+        public ActionResult ContestsByUser(string userName,int? page)
+        {
+            var usersContests = this.Data.Contests
+                .All()
+                .Where(uc=>uc.Creator.UserName==userName)
+                .OrderByDescending(uc=>uc.StartDate)
+                .Project()
+                .To<ContestViewModelIndex>().ToPagedList(page ?? 1, 3);
+
+            this.ViewBag.userName = userName;
+            return this.View(usersContests);
+        }
 
         public ActionResult Create()
         {
@@ -60,7 +72,7 @@
 
             contestViewModel.Participants = this.Data.Images
                                                     .All()
-                                                    .Where(img => img.ContestId == id)
+                                                    .Where(img => img.ContestId == id && img.isDeleated==false)
                                                     .Select(u => u.Author.Id)
                                                     .Distinct()
                                                     .Count();

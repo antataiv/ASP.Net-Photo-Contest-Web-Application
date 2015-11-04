@@ -5,12 +5,34 @@
         <a href="@Url.Action("Details", "Image", new { id=@Model.Id })"><img src="@Model.PictureUrl" class="thumbnail" /></a>
         <div>
             <span>@Html.LabelFor(m => m.User) :</span>
-            <span>@Html.DisplayFor(m => m.User)</span>
+            @if (@Model.User == this.User.Identity.Name)
+            {
+                <span>
+                    @Html.ActionLink(@Model.User, "Details", "Profile"
+            , new
+            {
+                userName = @Model.User
+            }, null)
+            </span>
+            }
+            else
+            {
+                <span>
+                    @Html.ActionLink(@Model.User, "Index", "Profile"
+            , null
+            , null)
+            </span>
+            }
+            
         </div>
         <div>
             <span>@Html.LabelFor(m => m.Rating) :</span>
             <span id="image-rating">@Html.DisplayFor(m => m.Rating)</span>
         </div>
+        @if (this.User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Erase picture", "Erase", "Image", new { imageId = Model.Id }, new { @class = "btn btn-default" });
+        }
         <div id="vote-button">
             @if (this.Request.IsAuthenticated)
             {

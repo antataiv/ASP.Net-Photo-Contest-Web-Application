@@ -99,6 +99,7 @@ namespace PhotoContest.Web.Controllers
             }
 
             contest.Flag = Flag.Inactive;
+
             this.Data.SaveChanges();
 
             return this.RedirectToAction("Index", "MyContests");
@@ -118,8 +119,8 @@ namespace PhotoContest.Web.Controllers
 
             var winnersNames = this.Data.Images
                 .All()
-                .Where(i => i.ContestId == id)
-                .OrderByDescending(i => i.Ratings.Sum(r => r.Value))
+                .Where(i => i.ContestId == id && i.isDeleated == false)
+                .OrderByDescending(i => i.Ratings.Sum(r => r.Value) )
                 .Take(winnersCount)
                 .Select(i => i.Author)
                 .ToList();

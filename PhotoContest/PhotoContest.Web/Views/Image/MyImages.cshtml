@@ -1,13 +1,23 @@
 ﻿@using PagedList.Mvc
+@using PhotoContest.Web.ViewModels
 @model PagedList.IPagedList<PhotoContest.Web.ViewModels.MyImagesViewModel>
 
 @{
     ViewBag.Title = "MyImages";
 }
 
-<h2>MyImages</h2>
+<h2>@ViewBag.Title</h2>
 <div class="row">
-    @Html.DisplayFor(x => x)
+    @if (Model.Any())
+    {
+        @Html.DisplayFor(x => x)
+    }
+    else
+    {
+        <h2>You still dont have any images.</h2>
+        <h2>You can see all active contests @Html.ActionLink("here", "Index", "Home")</h2>
+    }
+    
 </div>
 @Html.PagedListPager(Model, page => Url.Action("MyImages",
     new { page }))

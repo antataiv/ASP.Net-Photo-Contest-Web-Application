@@ -1,17 +1,26 @@
-﻿@model PhotoContest.Web.ViewModels.MyContestsViewModel
+﻿@using PhotoContest.Models
+@model PhotoContest.Web.ViewModels.MyContestsViewModel
 @{
     ViewBag.Title = "MyContestsViewModel";
 }
 
 
 <div class="well well-lg">
-    <div class="row" >
+    <div class="row">
         <span>@Model.Name</span>
-        
+
         <div class="pull-right">
             @if (@Model.Flag.ToString() == "Active")
             {
-                <mark>Active</mark>
+                <mark>Active Contest</mark>
+
+                if (@Model.ParticipationStrategy == ParticipationStrategy.Closed)
+                {
+                    <div class="btn-group">
+                        <p>@Html.ActionLink("Invite participants", "AddParticipants", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+                    </div>
+                }
+
                 <div class="btn-group">
                     <p>@Html.ActionLink("Update", "Edit", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
                 </div>
@@ -30,11 +39,11 @@
             }
             else
             {
-                <mark>Inactive</mark>
-                <div >
+                <mark>Inactive Contest</mark>
+                <div>
                     <p>Winner: </p>
                 </div>
             }
         </div>
-     </div>   
+    </div>
 </div>

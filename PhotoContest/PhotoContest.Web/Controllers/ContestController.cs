@@ -1,4 +1,6 @@
-﻿namespace PhotoContest.Web.Controllers
+﻿using PhotoContest.Models.Enums;
+
+namespace PhotoContest.Web.Controllers
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -18,6 +20,8 @@
     using System.Net;
     using System.Collections;
     using System.Collections.Generic;
+    using Microsoft.AspNet.SignalR;
+    using PhotoContest.Web.Hubs;
 
     public class ContestController : BaseController
     {
@@ -40,12 +44,13 @@
 
         }
 
-        public ActionResult ContestsByUser(string userName,int? page)
+        public ActionResult ContestsByUser(string userName, int? page)
         {
             User userId = this.Data.Users.All().Where(u => u.UserName == userName).FirstOrDefault();
 
             var usersContests = this.Data.Contests
                 .All()
+
                 .Where(uc=>uc.CreatorId==userId.Id)
                 .OrderByDescending(uc=>uc.StartDate)
                 .Project()
@@ -55,6 +60,7 @@
             return this.View(usersContests);
         }
 
+        [System.Web.Mvc.Authorize]
         public ActionResult Create()
         {
             this.LoadCategories();
@@ -76,7 +82,7 @@
 
             contestViewModel.Participants = this.Data.Images
                                                     .All()
-                                                    .Where(img => img.ContestId == id && img.isDeleated==false)
+                                                    .Where(img => img.ContestId == id && img.isDeleated == false)
                                                     .Select(u => u.Author.Id)
                                                     .Distinct()
                                                     .Count();
@@ -89,26 +95,31 @@
         }
 
         [HttpPost]
+        [System.Web.Mvc.Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateContestBindingModel model)
         {
             if (model != null && this.ModelState.IsValid)
             {
-                if (model != null && this.ModelState.IsValid)
+                var loggedUserId = this.User.Identity.GetUserId();
+                var newContest = Mapper.Map<Contest>(model);
+                newContest.StartDate = DateTime.Now;
+                newContest.CreatorId = loggedUserId;
+
+                if (model.RewardStrategy == RewardStrategy.One)
                 {
-                    var newContest = Mapper.Map<Contest>(model);
-                    newContest.StartDate = DateTime.Now;
-                    newContest.CreatorId = this.User.Identity.GetUserId();
-                    if (model.RewardStrategy == RewardStrategy.One)
-                    {
-                        newContest.NumberOfPrizes = 1;
-                    }
-
-                    this.Data.Contests.Add(newContest);
-                    this.Data.SaveChanges();
-
-                    return this.RedirectToAction("Details", "Contest", new { newContest.Id });
+                    newContest.NumberOfPrizes = 1;
                 }
+
+                var creator = this.Data.Users
+                                    .All()
+                                    .FirstOrDefault(u => u.Id == loggedUserId);
+
+                this.Data.Contests.Add(newContest);
+                newContest.Participants.Add(creator);
+                this.Data.SaveChanges();
+
+                return this.RedirectToAction("Details", "Contest", new { newContest.Id });
             }
 
             this.LoadCategories();
@@ -117,7 +128,7 @@
         }
 
         //new version
-        [HttpGet]
+        [System.Web.Mvc.Authorize]
         public ActionResult CreatePrizes(int contestId, int numOfWinnersRequired, int leftForAdding)
         {
             this.ViewBag.leftForAdding = leftForAdding;
@@ -126,8 +137,9 @@
             return this.View();
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
+        [System.Web.Mvc.Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult CreatePrizes(CreatePrizesBindingModel prizesModel, int contestId, int numOfWinnersRequired, int leftForAdding)
         {
             if (prizesModel != null && this.ModelState.IsValid)
@@ -156,6 +168,9 @@
                 var currentContest = this.Data.Contests.All().FirstOrDefault(c => c.Id == contestId);
                 currentContest.Flag = Flag.Active;
                 this.Data.SaveChanges();
+
+                SendContestCreatedNotification(string.Format("New contest \"{0}\" has been created.", currentContest.Name));
+
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
             }
         }
@@ -173,7 +188,7 @@
         }
 
         [HttpPost]
-        [Authorize]
+        [System.Web.Mvc.Authorize]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UploadImage(ImageBindingModel model, int contestId)
         {
@@ -213,23 +228,41 @@
         }
 
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public ActionResult Participate(int contestId)
-        {
-            var contest = this.Data.Contests
-                                .All()
-                                .FirstOrDefault(c => c.Id == contestId);
 
+        [HttpGet]
+        [System.Web.Mvc.Authorize]
+        public ActionResult Participate(string userId,int contestId)
+        {
+            var contest = this.Data.Contests.All()
+                                .FirstOrDefault(c => c.Id == contestId);
+                        
+            //var isItLast = contest.ParticipantsLimit - 1 == contest.Participants.Count;
+         
             var loggedUserId = this.User.Identity.GetUserId();
-            var loggedUser = this.Data.Users
+            var userToAdd = this.Data.Users
                             .All()
                             .FirstOrDefault(u => u.Id == loggedUserId);
 
+            if (userId != null)
+            {
+                userToAdd = this.Data.Users.Find(userId);
+            }
+
             if (contest != null)
             {
-                contest.Participants.Add(loggedUser);
+                //if (contest.Participants.Contains(userToAdd))
+                //{
+                //    this.ViewBag.AlreadyParticipatesMessage = "This user already participates";
+
+                //    return this.Content("This user already participates");
+                //}
+                contest.Participants.Add(userToAdd);
+
+                if (IsContestFinished(contest))
+                {                 
+                    contest.Flag = Flag.Past;                 
+                }
+
                 this.Data.SaveChanges();
 
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
@@ -250,6 +283,35 @@
             }
 
             return imageBlob;
+        }
+
+        private bool IsContestFinished(Contest contest)
+        {
+            if (contest.DeadlineStrategy == DeadlineStrategy.ByTime)
+            {
+                var isOver = DateTime.Now.Date >= contest.EndDate;
+                if (isOver)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                var isFull = contest.ParticipantsLimit == contest.Participants.Count;
+                if (isFull)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void SendContestCreatedNotification(string message)
+        {
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationsHub>();
+            hubContext.Clients.All.receiveNotification(message);
+
         }
     }
 }

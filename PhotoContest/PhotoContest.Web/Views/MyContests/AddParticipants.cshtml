@@ -1,0 +1,23 @@
+﻿@model IEnumerable<PhotoContest.Web.ViewModels.UserViewModel>
+
+@{
+    ViewBag.Title = "Search users: ";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="col">
+
+    <div id="search-form">
+        @Html.Action("Search", "MyContests")
+    </div>
+
+    <div id="search-results">
+    </div>
+
+    @*<div class="modal">@ViewBag.AlreadyParticipatesMessage</div>*@
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+
+} 

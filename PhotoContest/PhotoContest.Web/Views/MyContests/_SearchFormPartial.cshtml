@@ -1,0 +1,19 @@
+﻿@using (Ajax.BeginForm("Search", "MyContests", FormMethod.Post,
+    new AjaxOptions
+    {
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "POST",
+        UpdateTargetId = "search-results"
+    }))
+{ 
+    <div>
+        @Html.TextBox("query")
+        <input type="submit" value="Search" />
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+
+} 

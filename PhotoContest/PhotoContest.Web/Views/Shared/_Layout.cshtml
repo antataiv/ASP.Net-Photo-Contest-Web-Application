@@ -33,6 +33,7 @@
             </div>
         </div>
     </div>
+    <div id="notifications" class="container body-content"></div>
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -42,7 +43,22 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/signalr")
+    <script src="/signalr/hubs"></script>
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            var notificationHub = $.connection.notifications;
+
+            notificationHub.client.receiveNotification = function (notification) {
+                var notificationElement = $("<div>").addClass("alert alert-dismissable alert-info").html("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>" + notification);
+                $("#notifications").append(notificationElement);
+                //console.log("stignah do tuk");
+            };
+
+            $.connection.hub.start();
+        });
+    </script>
 </body>
 </html>

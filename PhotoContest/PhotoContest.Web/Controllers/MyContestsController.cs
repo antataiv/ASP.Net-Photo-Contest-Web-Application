@@ -14,6 +14,8 @@ namespace PhotoContest.Web.Controllers
     using PagedList.Mvc;
     using System.Net;
     using PhotoContest.Models;
+    using Microsoft.AspNet.SignalR;
+    using PhotoContest.Web.Hubs;
 
     public class MyContestsController : BaseController
     {
@@ -44,12 +46,12 @@ namespace PhotoContest.Web.Controllers
                 .Where(i => i.Author.Id.Equals(userId))
                 .Select(i => i.Contest).Distinct().ToList();
 
-            var participatingContests = 
+            var participatingContests =
                 cont.AsQueryable()
                 .Project()
                 .To<ParticipatingContestsViewModel>()
                 .Where(c => c.Flag.Equals("Active"))
-                .ToPagedList(page ?? 1,3);
+                .ToPagedList(page ?? 1, 3);
 
 
             return View(participatingContests);
@@ -101,6 +103,8 @@ namespace PhotoContest.Web.Controllers
             contest.Flag = Flag.Inactive;
             this.Data.SaveChanges();
 
+            SendFinalizedMessage(string.Format("Contest {0} has been dismissed. No winners will be selected for this contest.", contest.Name));
+
             return this.RedirectToAction("Index", "MyContests");
         }
 
@@ -133,7 +137,7 @@ namespace PhotoContest.Web.Controllers
             int counter = 0;
             foreach (var item in winnerPrizes)
             {
-                if (counter>= winnersNames.Count())
+                if (counter >= winnersNames.Count())
                 {
                     break;
                 }
@@ -153,6 +157,8 @@ namespace PhotoContest.Web.Controllers
                 .To<PrizeViewModel>()
                 .ToList();
             //return this.RedirectToAction("Index", "MyContests");
+
+            SendFinalizedMessage(string.Format("Contest {0} has been finalized.", contest.Name));
 
             return this.View(PrizesWithWinners);
         }
@@ -186,5 +192,12 @@ namespace PhotoContest.Web.Controllers
 
         //    return this.View(winners);
         //}
+
+        private void SendFinalizedMessage(string message)
+        {
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationsHub>();
+            hubContext.Clients.All.receiveNotification(message);
+            //return this.Content("Notification sent.");
+        }
     }
 }

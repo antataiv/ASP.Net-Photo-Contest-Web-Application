@@ -49,26 +49,21 @@
 </div>
 
 <div>
-    @if (Model.Flag == PhotoContest.Models.Flag.Active)
+    @if (Model.Flag == PhotoContest.Models.Flag.Active && this.Request.IsAuthenticated)
     {
-        if (Model.ParticipatingUsers.Contains(this.User.Identity.GetUserId()) || Model.ParticipationStrategy == "Open")
+        if (Model.ParticipationStrategy == "Open")
         {
-            using (Ajax.BeginForm("UploadImage", "Contest", new { contestId = Model.Id }, new AjaxOptions()
+            using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
                {
-                   HttpMethod = "POST",
-                   InsertionMode = InsertionMode.InsertAfter,
-                   UpdateTargetId = "images"
+                   HttpMethod = "POST"
                },
-               new { @class = "btn btn-default", enctype = "multipart/form-data" }))
+               new { @class = "btn btn-default" }))
             {
                 @Html.AntiForgeryToken()
-                <input type="file" name="upload" value="" />
-                <input type="text" name="title" value="" />
-                <input type="text" name="description" value="" />
-                <input type="submit" name="name" value="Upload Image" />
+                <input type="submit" name="name" value="Participate" class="btn btn-default" />
             }
         }
-        else if (Model.ParticipationStrategy == "Closed" && this.Request.IsAuthenticated)
+        else if (Model.ParticipationStrategy == "Closed")
         {
             using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
                {

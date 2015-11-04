@@ -14,7 +14,7 @@
         public string Name { get; set; }
 
         [Display(Name = "Enter Deadline Date: ")]
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Display(Name = "Enter Number of Prizes: ")]
         public int NumberOfPrizes { get; set; }

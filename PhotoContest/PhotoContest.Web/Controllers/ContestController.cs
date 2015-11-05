@@ -35,7 +35,7 @@ namespace PhotoContest.Web.Controllers
         {
             var inactiveContests = this.Data.Contests
                 .All()
-                .OrderBy(x => x.StartDate)
+                .OrderByDescending(x => x.StartDate)
                 .ProjectTo<PastContestViewModel>()
                 .Where(c => c.Flag.Equals("Past"))
                 .ToPagedList(page ?? 1, 3);
@@ -50,7 +50,7 @@ namespace PhotoContest.Web.Controllers
 
             var inactiveContests = this.Data.Contests
                 .All()
-                .OrderBy(x => x.StartDate)
+                .OrderByDescending(x => x.StartDate)
                 .Where(c => c.CreatorId.Equals(currLoggedUserId))
                 .ProjectTo<InactiveContestViewModel>()
                 .Where(c => c.Flag.Equals("Inactive"))

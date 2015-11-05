@@ -33,11 +33,13 @@
         @if (this.User.IsInRole("Admin"))
         {
             @Html.ActionLink("Erase picture", "Erase", "Image", new { imageId = Model.Id }, new { @class = "btn btn-default" });
-        }
+            }
         <div id="vote-button">
             @if (this.Request.IsAuthenticated &&
                 this.Model.User != this.User.Identity.Name &&
-                !Model.VotedUsers.Contains(this.User.Identity.GetUserId()))
+                !Model.VotedUsers.Contains(this.User.Identity.GetUserId()) &&
+                Model.ContestFlag.ToString()=="Active"
+                )
             {
                 if (Model.VotingStrategy == "Closed" && Model.UsersInContest.Contains(this.User.Identity.GetUserId()))
                 {

@@ -303,6 +303,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\error.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\photography.jpg" />
     <Content Include="Content\profile-image-default.png" />
@@ -392,6 +393,7 @@
     <Content Include="Views\Profile\Details.cshtml" />
     <Content Include="Views\Contest\ContestsByUser.cshtml" />
     <Content Include="Views\Image\ImagesByUser.cshtml" />
+    <Content Include="Views\Shared\Error404.cshtml" />
     <Content Include="Views\Contest\InactiveContests.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\InactiveContestViewModel.cshtml" />
     <Content Include="Views\Shared\_LeftSideNavbar.cshtml" />

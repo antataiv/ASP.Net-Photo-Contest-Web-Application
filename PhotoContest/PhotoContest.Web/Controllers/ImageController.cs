@@ -89,7 +89,7 @@ namespace PhotoContest.Web.Controllers
             }
 
 
-            return this.Json("Error");
+            return this.RedirectToAction("Error404", "Home");
         }
 
         [HttpPost]

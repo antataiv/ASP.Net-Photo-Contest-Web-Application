@@ -115,3 +115,17 @@ textarea {
     width: 500px;
     margin-left: 10px;
 }
+#error-container {
+    background-color: black;
+    height: 1000px;
+    color: white;
+}
+#error-image {
+    width: 1140px;
+}
+#error-header h1 {
+    font-size: 1180%;
+}
+#error-header h2 {
+    font-size: 700%;
+}

@@ -1,5 +1,4 @@
-﻿
-namespace PhotoContest.Web.Controllers
+﻿namespace PhotoContest.Web.Controllers
 {
     using System.Web.Mvc;
     using Microsoft.AspNet.Identity;
@@ -16,8 +15,11 @@ namespace PhotoContest.Web.Controllers
     using PhotoContest.Models;
     using System.Collections.Generic;
     using Microsoft.AspNet.SignalR;
-    using PhotoContest.Web.Hubs;    
+    using PhotoContest.Web.Hubs;
     using System.ComponentModel.DataAnnotations;
+
+
+    [System.Web.Mvc.Authorize]
     public class MyContestsController : BaseController
     {
         public MyContestsController(IPhotoContestData data)
@@ -78,34 +80,6 @@ namespace PhotoContest.Web.Controllers
             return this.View();
         }
 
-        public ActionResult AddUserToContest(int? contestId, string userId)
-        {
-            if (contestId == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var contest = this.Data.Contests.Find(contestId);
-            if (contest == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-            }
-            
-            var user = this.Data.Users.Find(userId);
-
-            var isParticipate = contest.Participants.FirstOrDefault(p => p.UserName == user.UserName);
-            if (isParticipate == null)
-            {
-                contest.Participants.Add(user);
-                this.Data.SaveChanges();
-                return this.RedirectToAction("Details", "Contest", new { id = contest.Id });
-            }
-
-            return this.RedirectToAction("Details", "Contest", new { id = contest.Id });
-            //return this.PartialView("_AddUserToContest", );
-            
-        }
-
         [HttpGet]
         public ActionResult Search()
         {
@@ -135,36 +109,42 @@ namespace PhotoContest.Web.Controllers
             return View("_SearchResultsPartial", userViewModels);
 
         }
-   
 
-        // GET: /MyContests/Edit/5
-        public ActionResult Edit(int? id)
+        //[ValidateAntiForgeryToken]
+ 
+        public ActionResult Edit(EditContestBindingModel model, int id)
         {
-            if (id == null)
+            var contestToEdit = this.Data.Contests.Find(id);
+
+            if (ModelState.IsValid)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var contestToEdit = this.Data.Contests.Find(id);
             if (contestToEdit == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
 
-
-            return this.View(contestToEdit);
-        }
-
-        // POST: /MyContests/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, EditContestBindingModel model)
-        {
-            if (ModelState.IsValid)
+            if (model.Name != null)
             {
-
+                contestToEdit.Name = model.Name;
             }
-            return null;
+
+            contestToEdit.DeadlineStrategy = model.DeadlineStrategy;
+            if (model.EndDate != null)
+            {
+                contestToEdit.EndDate = model.EndDate;
+            }
+
+            if (model.ParticipantsLimit != null)
+            {
+                contestToEdit.ParticipantsLimit = model.ParticipantsLimit;
+            }
+
+            this.Data.SaveChanges();
+
+            return this.View();
         }
 
 
@@ -204,7 +184,7 @@ namespace PhotoContest.Web.Controllers
             var winnersNames = this.Data.Images
                 .All()
                 .Where(i => i.ContestId == id && i.isDeleated == false)
-                .OrderByDescending(i => i.Ratings.Sum(r => r.Value) )
+                .OrderByDescending(i => i.Ratings.Sum(r => r.Value))
                 .Take(winnersCount)
                 .Select(i => i.Author)
                 .ToList();

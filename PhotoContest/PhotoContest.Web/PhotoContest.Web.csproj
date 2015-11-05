@@ -258,7 +258,6 @@
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeAdminController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\Authorize.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ContestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -390,6 +389,7 @@
     <Content Include="Views\Profile\Details.cshtml" />
     <Content Include="Views\Contest\ContestsByUser.cshtml" />
     <Content Include="Views\Image\ImagesByUser.cshtml" />
+    <Content Include="Views\MyContests\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

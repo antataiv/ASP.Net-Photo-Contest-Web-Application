@@ -1,0 +1,79 @@
+﻿@model PhotoContest.Web.Models.BindingModels.EditContestBindingModel
+
+
+@{
+    ViewBag.Title = "Edit Contest";
+}
+
+<div class="jumbotron container">
+    <h1>@ViewBag.Title</h1>
+</div>
+
+@using (Ajax.BeginForm("Edit", "MyContests", new { id = Url.RequestContext.RouteData.Values["id"]},new AjaxOptions()
+{
+    HttpMethod = "POST",
+    
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <form class="form-horizontal" role="form">
+        <div class="form-group" id="edit-contest-form">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Name, new { @class = "form-control" })
+            </div>
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>        
+        <br />
+        <div class="form-group" id="edit-contest-form">
+            @Html.LabelFor(m => m.DeadlineStrategy, new { @class = "control-label col-sm-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.DeadlineStrategy, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" name="name" id="edit" value="Edit Contest" onclick="return  Redirect()"/>
+            </div>
+        </div>
+    </form>
+}
+
+ 
+@section Scripts {
+@Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    <script>
+        $(function() {
+            $("#DeadlineStrategy").parent().append($('<div id="deadline-div" class="form-group"></div>'));
+            $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+            $("#deadline-div").append('@Html.LabelFor(m => m.EndDate, new {@class = "control-label col-sm-2"})');
+            $("#deadline-div").append('@Html.TextBoxFor(m => m.EndDate, new {@class = "form-control", @id = "append-div", @type = "date"})');
+            $("#DeadlineStrategy").on("change", function() {
+                if ($(this).val() == 0) {
+                    console.log("ByTime");
+                    $("#deadline-div").remove();
+                    $("#DeadlineStrategy").after(function() {
+                        $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+                        $("#deadline-div").append('@Html.LabelFor(m => m.EndDate, new {@class = "control-label col-sm-2"})');
+                        $("#deadline-div").append('@Html.TextBoxFor(m => m.EndDate, new {@class = "form-control", @id = "append-div", @type = "date"})');
+                    });
+                } else if ($(this).val() == 1) {
+                    console.log("ByParticipants");
+                    $("#deadline-div").remove();
+                    $("#DeadlineStrategy").after(function() {
+                        $(this).parent().append($('<div id="deadline-div" class="form-group"></div>'));
+                        $("#deadline-div").append('@Html.LabelFor(m => m.ParticipantsLimit, new {@class = "control-label col-sm-2"})');
+                        $("#deadline-div").append('@Html.TextBoxFor(m => m.ParticipantsLimit, new {@class = "form-control"})');
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        function Redirect() {
+            window.location.href = "/mycontests/index";
+        }
+    </script>
+}

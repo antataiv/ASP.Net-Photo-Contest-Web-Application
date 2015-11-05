@@ -16,6 +16,7 @@ using PhotoContest.Models;
 
 namespace PhotoContest.Web.Controllers
 {
+    [ValidateInput(false)]
     public class ImageController : BaseController
     {
         public ImageController(IPhotoContestData data)

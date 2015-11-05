@@ -1,4 +1,6 @@
-﻿@using (Ajax.BeginForm("Search", "MyContests", FormMethod.Post,
+﻿@*added new {id=viewBag}*@
+
+@using (Ajax.BeginForm("Search", "MyContests", FormMethod.Post,
     new AjaxOptions
     {
         InsertionMode = InsertionMode.Replace,

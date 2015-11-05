@@ -1,0 +1,28 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<PhotoContest.Web.ViewModels.InactiveContestViewModel>
+
+@{
+    ViewBag.Title = "All Past Contests";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div class="row">
+    @if (Model.Any())
+    {
+        @Html.DisplayFor(x => x)
+    }
+    else
+    {
+        <h2>No past contests</h2>
+    }
+
+</div>
+@Html.PagedListPager(Model, page => Url.Action("InactiveContests",
+    new { page }))
+<div class="row">
+    @Html.ActionLink("Back", "Index", "Home", new { }, new { @class = "btn btn-default" })
+</div>
+
+

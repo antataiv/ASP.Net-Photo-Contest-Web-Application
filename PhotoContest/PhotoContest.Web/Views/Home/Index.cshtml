@@ -6,6 +6,10 @@
 <div class="jumbotron container">
     <h1>@ViewBag.Title</h1>
     <div class="row pull-right">
+        @if (this.Request.IsAuthenticated)
+        {
+            @Html.ActionLink("Inactive Contests", "InactiveContests", "Contest", new { }, new { @class = "btn btn-default" })
+        }
         @Html.ActionLink("Past Contests", "PastContests", "Contest", new { }, new { @class = "btn btn-default" })
         @if (this.User.Identity.IsAuthenticated)
         {

@@ -25,7 +25,7 @@ namespace PhotoContest.Web.Controllers
         {
             var activeContests = this.Data.Contests
                 .All()
-                .OrderBy(x => x.StartDate)
+                .OrderByDescending(x => x.StartDate)
                 .ProjectTo<ContestViewModelIndex>()
                 .Where(c => c.Flag.Equals("Active"))
                 .ToPagedList(page ?? 1, 3);

@@ -252,7 +252,7 @@ namespace PhotoContest.Web.Controllers
 
         
 
-        [HttpPost]
+        [HttpGet]
         [System.Web.Mvc.Authorize]
         public ActionResult Participate(string userId, int contestId)
         {

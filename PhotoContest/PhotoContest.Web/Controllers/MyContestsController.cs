@@ -50,8 +50,7 @@ namespace PhotoContest.Web.Controllers
 
             var participatingContests =
                 cont.AsQueryable()
-                .Project()
-                .To<ParticipatingContestsViewModel>()
+                .ProjectTo<ParticipatingContestsViewModel>()
                 .Where(c => c.Flag.Equals("Active"))
                 .ToPagedList(page ?? 1, 3);
 
@@ -64,13 +63,13 @@ namespace PhotoContest.Web.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             var contest = this.Data.Contests.Find(id);
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             this.ViewBag.ContestId = contest.Id;
@@ -82,13 +81,13 @@ namespace PhotoContest.Web.Controllers
         {
             if (contestId == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             var contest = this.Data.Contests.Find(contestId);
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
             
             var user = this.Data.Users.Find(userId);
@@ -148,7 +147,7 @@ namespace PhotoContest.Web.Controllers
             var contestToEdit = this.Data.Contests.Find(id);
             if (contestToEdit == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
 
@@ -177,7 +176,7 @@ namespace PhotoContest.Web.Controllers
 
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             contest.Flag = Flag.Inactive;
@@ -196,7 +195,7 @@ namespace PhotoContest.Web.Controllers
 
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             var winnersCount = contest.NumberOfPrizes.GetValueOrDefault();

@@ -34,8 +34,6 @@ namespace PhotoContest.Web.Controllers
 
             this.ViewBag.NumberOfCreatedContests = this.Data.Contests.All().Where(c => c.CreatorId.Equals(currentUserId)).Count();
 
-
-
             return this.View(activeContests);
         }
 
@@ -43,5 +41,9 @@ namespace PhotoContest.Web.Controllers
         {
             return View();
         }
+       public ActionResult Error404()
+       {
+           return View();
+       }
     }
 }

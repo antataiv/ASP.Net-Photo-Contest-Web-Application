@@ -23,6 +23,7 @@ namespace PhotoContest.Web.Controllers
     using Microsoft.AspNet.SignalR;
     using PhotoContest.Web.Hubs;
 
+    [ValidateInput(false)]
     public class ContestController : BaseController
     {
         public ContestController(IPhotoContestData data)
@@ -67,8 +68,8 @@ namespace PhotoContest.Web.Controllers
             var usersContests = this.Data.Contests
                 .All()
 
-                .Where(uc=>uc.CreatorId==userId.Id)
-                .OrderByDescending(uc=>uc.StartDate)
+                .Where(uc => uc.CreatorId == userId.Id)
+                .OrderByDescending(uc => uc.StartDate)
                 .Project()
                 .To<ContestViewModelIndex>().ToPagedList(page ?? 1, 3);
 
@@ -88,7 +89,7 @@ namespace PhotoContest.Web.Controllers
         public ActionResult Details(int id)
         {
             //New Version
-            
+
             var contest = this.Data.Contests
                                 .All()
                                 .FirstOrDefault(c => c.Id == id);
@@ -245,7 +246,7 @@ namespace PhotoContest.Web.Controllers
                     {
                         contest.Participants.Add(user);
                     }
-                    
+
 
                     this.Data.Images.Add(image);
                     this.Data.SaveChanges();
@@ -259,7 +260,7 @@ namespace PhotoContest.Web.Controllers
             return this.RedirectToAction("Error404", "Home");
         }
 
-        
+
 
         [HttpGet]
         [System.Web.Mvc.Authorize]

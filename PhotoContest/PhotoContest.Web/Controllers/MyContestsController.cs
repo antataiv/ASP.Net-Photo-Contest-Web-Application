@@ -52,8 +52,7 @@
 
             var participatingContests =
                 cont.AsQueryable()
-                .Project()
-                .To<ParticipatingContestsViewModel>()
+                .ProjectTo<ParticipatingContestsViewModel>()
                 .Where(c => c.Flag.Equals("Active"))
                 .ToPagedList(page ?? 1, 3);
 
@@ -66,13 +65,13 @@
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             var contest = this.Data.Contests.Find(id);
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             this.ViewBag.ContestId = contest.Id;
@@ -123,7 +122,7 @@
 
             if (contestToEdit == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             if (model.Name != null)
@@ -157,7 +156,7 @@
 
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             contest.Flag = Flag.Inactive;
@@ -176,7 +175,7 @@
 
             if (contest == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                return this.RedirectToAction("Error404", "Home");
             }
 
             var winnersCount = contest.NumberOfPrizes.GetValueOrDefault();

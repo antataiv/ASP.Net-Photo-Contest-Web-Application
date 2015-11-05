@@ -16,6 +16,7 @@ using PhotoContest.Models;
 
 namespace PhotoContest.Web.Controllers
 {
+    [ValidateInput(false)]
     public class ImageController : BaseController
     {
         public ImageController(IPhotoContestData data)
@@ -89,7 +90,7 @@ namespace PhotoContest.Web.Controllers
             }
 
 
-            return this.Json("Error");
+            return this.RedirectToAction("Error404", "Home");
         }
 
         [HttpPost]

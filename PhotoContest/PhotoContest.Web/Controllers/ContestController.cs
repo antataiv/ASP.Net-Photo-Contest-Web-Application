@@ -21,6 +21,9 @@
     using Microsoft.AspNet.SignalR;
     using PhotoContest.Web.Hubs;
     using PhotoContest.Models.Enums;
+
+
+    [ValidateInput(false)]
     public class ContestController : BaseController
     {
         public ContestController(IPhotoContestData data)
@@ -31,9 +34,25 @@
         {
             var inactiveContests = this.Data.Contests
                 .All()
-                .OrderBy(x => x.StartDate)
-                .Project().To<PastContestViewModel>()
+                .OrderByDescending(x => x.StartDate)
+                .ProjectTo<PastContestViewModel>()
                 .Where(c => c.Flag.Equals("Past"))
+                .ToPagedList(page ?? 1, 3);
+
+            return this.View(inactiveContests);
+
+        }
+
+        public ActionResult InactiveContests(int? page)
+        {
+            var currLoggedUserId = this.User.Identity.GetUserId();
+
+            var inactiveContests = this.Data.Contests
+                .All()
+                .OrderByDescending(x => x.StartDate)
+                .Where(c => c.CreatorId.Equals(currLoggedUserId))
+                .ProjectTo<InactiveContestViewModel>()
+                .Where(c => c.Flag.Equals("Inactive"))
                 .ToPagedList(page ?? 1, 3);
 
             return this.View(inactiveContests);
@@ -47,8 +66,8 @@
             var usersContests = this.Data.Contests
                 .All()
 
-                .Where(uc=>uc.CreatorId==userId.Id)
-                .OrderByDescending(uc=>uc.StartDate)
+                .Where(uc => uc.CreatorId == userId.Id)
+                .OrderByDescending(uc => uc.StartDate)
                 .Project()
                 .To<ContestViewModelIndex>().ToPagedList(page ?? 1, 3);
 
@@ -68,26 +87,33 @@
         public ActionResult Details(int id)
         {
             //New Version
+
             var contest = this.Data.Contests
                                 .All()
                                 .FirstOrDefault(c => c.Id == id);
+            if (contest != null)
+            {
+                var contestViewModel = Mapper.Map<ContestDetailsViewModel>(contest);
 
-            var contestViewModel = Mapper.Map<ContestDetailsViewModel>(contest);
+                contestViewModel.CreatorName = contest.Creator.UserName;
 
-            contestViewModel.CreatorName = contest.Creator.UserName;
+                contestViewModel.Participants = this.Data.Images
+                    .All()
+                    .Where(img => img.ContestId == id && img.isDeleated == false)
+                    .Select(u => u.Author.Id)
+                    .Distinct()
+                    .Count();
 
-            contestViewModel.Participants = this.Data.Images
-                                                    .All()
-                                                    .Where(img => img.ContestId == id && img.isDeleated == false)
-                                                    .Select(u => u.Author.Id)
-                                                    .Distinct()
-                                                    .Count();
+                var numberOfPrizesInDB = this.Data.Prizes.All().Where(i => i.ContestId == contestViewModel.Id).Count();
+                this.ViewBag.NumOfPrizesInDB = numberOfPrizesInDB;
+                this.ViewBag.NumOfWinners = contestViewModel.NumberOfPrizes;
 
-            var numberOfPrizesInDB = this.Data.Prizes.All().Where(i => i.ContestId == contestViewModel.Id).Count();
-            this.ViewBag.NumOfPrizesInDB = numberOfPrizesInDB;
-            this.ViewBag.NumOfWinners = contestViewModel.NumberOfPrizes;
-
-            return this.View(contestViewModel);
+                return this.View(contestViewModel);
+            }
+            else
+            {
+                return this.RedirectToAction("Error404", "Home");
+            }
         }
 
         [HttpPost]
@@ -191,6 +217,9 @@
 
             if (ModelState.IsValid)
             {
+                var contest = this.Data.Contests.All().FirstOrDefault(c => c.Id == contestId);
+
+
                 if (model.Upload != null && model.Upload.ContentLength > 0)
                 {
                     CloudBlockBlob photo = await this.UploadBlobAsync(model.Upload);
@@ -211,6 +240,12 @@
                         //ThumbnailUrl = Dropbox.Download(paths[1], "Thumbnails")
                     };
 
+                    if (!contest.Participants.Contains(user))
+                    {
+                        contest.Participants.Add(user);
+                    }
+
+
                     this.Data.Images.Add(image);
                     this.Data.SaveChanges();
                     this.TempData["Success"] = new[] { "Image successfully added." };
@@ -220,18 +255,18 @@
 
             }
 
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid model");
+            return this.RedirectToAction("Error404", "Home");
         }
 
         [HttpGet]
         [System.Web.Mvc.Authorize]
-        public ActionResult Participate(string userId,int contestId)
+        public ActionResult Participate(string userId, int contestId)
         {
             var contest = this.Data.Contests.All()
                                 .FirstOrDefault(c => c.Id == contestId);
-                        
+
             //var isItLast = contest.ParticipantsLimit - 1 == contest.Participants.Count;
-         
+
             var loggedUserId = this.User.Identity.GetUserId();
             var userToAdd = this.Data.Users
                             .All()
@@ -253,8 +288,8 @@
                 contest.Participants.Add(userToAdd);
 
                 if (IsContestFinished(contest))
-                {                 
-                    contest.Flag = Flag.Past;                 
+                {
+                    contest.Flag = Flag.Past;
                 }
 
                 this.Data.SaveChanges();
@@ -262,7 +297,7 @@
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
             }
 
-            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return this.RedirectToAction("Error404", "Home");
         }
 
         private async Task<CloudBlockBlob> UploadBlobAsync(HttpPostedFileBase imageFile)

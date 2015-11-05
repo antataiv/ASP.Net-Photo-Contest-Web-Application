@@ -287,6 +287,7 @@
     <Compile Include="ViewModels\CommentViewModel.cs" />
     <Compile Include="ViewModels\ImageDetailsViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\InactiveContestViewModel.cs" />
     <Compile Include="ViewModels\MyContestsViewModel.cs" />
     <Compile Include="ViewModels\ContestViewModelIndex.cs" />
     <Compile Include="ViewModels\ContestDetailsViewModel.cs" />
@@ -301,6 +302,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\error.png" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\photography.jpg" />
     <Content Include="Content\profile-image-default.png" />
@@ -315,6 +317,7 @@
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\HomeAdmin\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\DisplayTemplates\AdminMyContestViewModel.cshtml" />
+    <None Include="Properties\PublishProfiles\teamfielderphotocontest2.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -390,6 +393,10 @@
     <Content Include="Views\Contest\ContestsByUser.cshtml" />
     <Content Include="Views\Image\ImagesByUser.cshtml" />
     <Content Include="Views\MyContests\Edit.cshtml" />
+    <Content Include="Views\Shared\Error404.cshtml" />
+    <Content Include="Views\Contest\InactiveContests.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\InactiveContestViewModel.cshtml" />
+    <Content Include="Views\Shared\_LeftSideNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

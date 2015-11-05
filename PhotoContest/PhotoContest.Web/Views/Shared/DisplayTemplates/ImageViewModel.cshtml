@@ -8,21 +8,21 @@
             <span>@Html.LabelFor(m => m.User) :</span>
             @if (@Model.User == this.User.Identity.Name)
             {
-            <span>
-                @Html.ActionLink(@Model.User, "Details", "Profile"
+                <span>
+                    @Html.ActionLink(@Model.User, "Details", "Profile"
             , new
             {
                 userName = @Model.User
             }, null)
-            </span>
+                </span>
             }
             else
             {
-            <span>
-                @Html.ActionLink(@Model.User, "Index", "Profile"
+                <span>
+                    @Html.ActionLink(@Model.User, "Index", "Profile"
             , null
             , null)
-            </span>
+                </span>
             }
 
         </div>
@@ -35,46 +35,36 @@
             @Html.ActionLink("Erase picture", "Erase", "Image", new { imageId = Model.Id }, new { @class = "btn btn-default" });
         }
         <div id="vote-button">
-            @if (this.Request.IsAuthenticated)
+            @if (this.Request.IsAuthenticated &&
+                this.Model.User != this.User.Identity.Name &&
+                !Model.VotedUsers.Contains(this.User.Identity.GetUserId()))
             {
-                if (Model.VotingStrategy == "Closed")
+                if (Model.VotingStrategy == "Closed" && Model.UsersInContest.Contains(this.User.Identity.GetUserId()))
                 {
-                    if (Model.VotingStrategy == "Closed")
+                    using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
                     {
-                        if (this.Model.User != this.User.Identity.Name &&
-                            !Model.VotedUsers.Contains(this.User.Identity.GetUserId()) &&
-                            Model.UsersInContest.Contains(this.User.Identity.GetUserId()))
-                        {
-                            using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
-                            {
-                                HttpMethod = "POST",
-                                UpdateTargetId = "image-rating",
-                                InsertionMode = InsertionMode.Replace,
-                                OnSuccess = "onVoteSuccess"
-                            }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
-                            }
-                        }
+                        HttpMethod = "POST",
+                        UpdateTargetId = "image-rating",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "onVoteSuccess"
+                    }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
                     }
-                    else if (Model.VotingStrategy == "Open")
+                }
+                else if (Model.VotingStrategy == "Open")
+                {
+                    using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
                     {
-                        if (this.Model.User != this.User.Identity.Name &&
-                            !Model.VotedUsers.Contains(this.User.Identity.GetUserId()))
-                        {
-                            using (Ajax.BeginForm("Vote", "Image", new { imageId = Model.Id }, new AjaxOptions
-                            {
-                                HttpMethod = "POST",
-                                UpdateTargetId = "image-rating",
-                                InsertionMode = InsertionMode.Replace,
-                                OnSuccess = "onVoteSuccess"
-                            }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
-                            }
-                        }
+                        HttpMethod = "POST",
+                        UpdateTargetId = "image-rating",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "onVoteSuccess"
+                    }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="submit" class="btn btn-default" id="vote" name="vote" value="Vote" />
                     }
                 }
             }

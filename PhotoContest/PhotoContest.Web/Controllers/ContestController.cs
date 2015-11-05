@@ -34,8 +34,24 @@ namespace PhotoContest.Web.Controllers
             var inactiveContests = this.Data.Contests
                 .All()
                 .OrderBy(x => x.StartDate)
-                .Project().To<PastContestViewModel>()
+                .ProjectTo<PastContestViewModel>()
                 .Where(c => c.Flag.Equals("Past"))
+                .ToPagedList(page ?? 1, 3);
+
+            return this.View(inactiveContests);
+
+        }
+
+        public ActionResult InactiveContests(int? page)
+        {
+            var currLoggedUserId = this.User.Identity.GetUserId();
+
+            var inactiveContests = this.Data.Contests
+                .All()
+                .OrderBy(x => x.StartDate)
+                .Where(c => c.CreatorId.Equals(currLoggedUserId))
+                .ProjectTo<InactiveContestViewModel>()
+                .Where(c => c.Flag.Equals("Inactive"))
                 .ToPagedList(page ?? 1, 3);
 
             return this.View(inactiveContests);
@@ -226,13 +242,13 @@ namespace PhotoContest.Web.Controllers
 
         [HttpGet]
         [System.Web.Mvc.Authorize]
-        public ActionResult Participate(string userId,int contestId)
+        public ActionResult Participate(string userId, int contestId)
         {
             var contest = this.Data.Contests.All()
                                 .FirstOrDefault(c => c.Id == contestId);
-                        
+
             //var isItLast = contest.ParticipantsLimit - 1 == contest.Participants.Count;
-         
+
             var loggedUserId = this.User.Identity.GetUserId();
             var userToAdd = this.Data.Users
                             .All()
@@ -254,8 +270,8 @@ namespace PhotoContest.Web.Controllers
                 contest.Participants.Add(userToAdd);
 
                 if (IsContestFinished(contest))
-                {                 
-                    contest.Flag = Flag.Past;                 
+                {
+                    contest.Flag = Flag.Past;
                 }
 
                 this.Data.SaveChanges();

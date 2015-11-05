@@ -218,6 +218,9 @@ namespace PhotoContest.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                var contest = this.Data.Contests.All().FirstOrDefault(c => c.Id == contestId);
+
+
                 if (model.Upload != null && model.Upload.ContentLength > 0)
                 {
                     CloudBlockBlob photo = await this.UploadBlobAsync(model.Upload);
@@ -237,6 +240,12 @@ namespace PhotoContest.Web.Controllers
                         //PictureUrl = Dropbox.Download(paths[0], "Contest"),
                         //ThumbnailUrl = Dropbox.Download(paths[1], "Thumbnails")
                     };
+
+                    if (!contest.Participants.Contains(user))
+                    {
+                        contest.Participants.Add(user);
+                    }
+                    
 
                     this.Data.Images.Add(image);
                     this.Data.SaveChanges();

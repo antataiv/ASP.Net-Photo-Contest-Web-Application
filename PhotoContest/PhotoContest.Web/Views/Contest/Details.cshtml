@@ -17,7 +17,7 @@
 
 
 <div class="jumbotron container">
-    <h2>@Html.Encode(Model.Name)</h2>
+    <h2>@Model.Name</h2>
     @if (Model.CreatorName == this.User.Identity.Name)
     {
         if (this.ViewBag.NumOfPrizesInDB != null)

@@ -16,7 +16,7 @@ namespace PhotoContest.Web.Controllers
     using PhotoContest.Models;
     using System.Collections.Generic;
     using Microsoft.AspNet.SignalR;
-    using PhotoContest.Web.Hubs;    
+    using PhotoContest.Web.Hubs;
     using System.ComponentModel.DataAnnotations;
     public class MyContestsController : BaseController
     {
@@ -89,7 +89,7 @@ namespace PhotoContest.Web.Controllers
             {
                 return this.RedirectToAction("Error404", "Home");
             }
-            
+
             var user = this.Data.Users.Find(userId);
 
             var isParticipate = contest.Participants.FirstOrDefault(p => p.UserName == user.UserName);
@@ -102,7 +102,7 @@ namespace PhotoContest.Web.Controllers
 
             return this.RedirectToAction("Details", "Contest", new { id = contest.Id });
             //return this.PartialView("_AddUserToContest", );
-            
+
         }
 
         [HttpGet]
@@ -134,7 +134,7 @@ namespace PhotoContest.Web.Controllers
             return View("_SearchResultsPartial", userViewModels);
 
         }
-   
+
 
         // GET: /MyContests/Edit/5
         public ActionResult Edit(int? id)
@@ -183,7 +183,9 @@ namespace PhotoContest.Web.Controllers
 
             this.Data.SaveChanges();
 
-            SendFinalizedMessage(string.Format("Contest {0} has been dismissed. No winners will be selected for this contest.", contest.Name));
+            var html = HttpContext.Server.HtmlEncode(contest.Name);
+
+            SendFinalizedMessage(string.Format("Contest {0} has been dismissed. No winners will be selected for this contest.", html));
 
             return this.RedirectToAction("Index", "MyContests");
         }
@@ -203,7 +205,7 @@ namespace PhotoContest.Web.Controllers
             var winnersNames = this.Data.Images
                 .All()
                 .Where(i => i.ContestId == id && i.isDeleated == false)
-                .OrderByDescending(i => i.Ratings.Sum(r => r.Value) )
+                .OrderByDescending(i => i.Ratings.Sum(r => r.Value))
                 .Take(winnersCount)
                 .Select(i => i.Author)
                 .ToList();
@@ -236,9 +238,10 @@ namespace PhotoContest.Web.Controllers
                 .Project()
                 .To<PrizeViewModel>()
                 .ToList();
-            //return this.RedirectToAction("Index", "MyContests");
 
-            SendFinalizedMessage(string.Format("Contest {0} has been finalized.", contest.Name));
+            var html = HttpContext.Server.HtmlEncode(contest.Name);
+
+            SendFinalizedMessage(string.Format("Contest {0} has been finalized.", html));
 
             return this.View(PrizesWithWinners);
         }

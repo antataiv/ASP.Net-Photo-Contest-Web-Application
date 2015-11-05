@@ -1,4 +1,4 @@
 ﻿@model PhotoContest.Web.ViewModels.PrizeViewModel
 
-<h2>@Model.Position position -> @Model.Username wins @Model.PrizeName</h2>
+<h2>@Model.Position position -> @Model.Username wins @Html.Encode(Model.PrizeName)</h2>
 

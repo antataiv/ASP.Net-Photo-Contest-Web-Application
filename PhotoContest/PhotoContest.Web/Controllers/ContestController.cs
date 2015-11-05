@@ -15,6 +15,7 @@ namespace PhotoContest.Web.Controllers
     using PhotoContest.Web.ViewModels;
     using System;
     using System.Linq;
+    using System.Web;
     using System.Web.Mvc;
     using PagedList;
     using System.Net;
@@ -193,7 +194,9 @@ namespace PhotoContest.Web.Controllers
                 currentContest.Flag = Flag.Active;
                 this.Data.SaveChanges();
 
-                SendContestCreatedNotification(string.Format("New contest \"{0}\" has been created.", currentContest.Name));
+                var html = HttpContext.Server.HtmlEncode(currentContest.Name);
+
+                SendContestCreatedNotification(string.Format("New contest \"{0}\" has been created.", html));
 
                 return this.RedirectToAction("Details", "Contest", new { id = contestId });
             }

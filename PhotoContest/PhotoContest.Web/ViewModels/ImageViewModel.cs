@@ -21,6 +21,8 @@
 
         public string ParticipationStrategy { get; set; }
 
+        public string ContestFlag { get; set; }
+
         public bool isDeleated { get; set; }
 
         public ICollection<string> VotedUsers { get; set; }

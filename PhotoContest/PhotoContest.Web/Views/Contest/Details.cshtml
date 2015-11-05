@@ -74,7 +74,7 @@
                 @Html.LabelFor(m => m.ParticipatingImages) <span class="badge">@Model.ParticipatingImages</span>
             </button>
             <button class="btn btn-default" id="details-button" type="button">
-                @Html.LabelFor(m => m.Participants) <span class="badge">@Model.Participants</span>
+                @Html.LabelFor(m => m.Participants) <span class="badge">@Model.ParticipatingUsers.Count()</span>
             </button>
         </div>
     </div>
@@ -93,7 +93,7 @@
     </div>
     <div class="well col-xs-12 col-sm-10" style="margin-left: 175px;">
         <div class="row">
-            @if (Model.Flag == PhotoContest.Models.Flag.Active)
+            @if (Model.Flag.ToString()=="Active")
             {
                 if (Model.ParticipatingUsers.Contains(this.User.Identity.GetUserId()) || Model.ParticipationStrategy == "Open")
                 {
@@ -120,7 +120,7 @@
                         <input type="submit" value="Upload Image" onclick="validateFunction()" />
                     }
                 }
-                else if (Model.ParticipationStrategy == "Closed" && this.Request.IsAuthenticated)
+                else if ((Model.ParticipationStrategy == "Closed" && this.Request.IsAuthenticated))
                 {
                     using (Ajax.BeginForm("Participate", "Contest", new { contestId = Model.Id }, new AjaxOptions()
                     {

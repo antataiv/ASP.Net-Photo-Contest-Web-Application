@@ -243,9 +243,9 @@ namespace PhotoContest.Web.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid model");
         }
 
+        
 
-
-        [HttpGet]
+        [HttpPost]
         [System.Web.Mvc.Authorize]
         public ActionResult Participate(string userId, int contestId)
         {

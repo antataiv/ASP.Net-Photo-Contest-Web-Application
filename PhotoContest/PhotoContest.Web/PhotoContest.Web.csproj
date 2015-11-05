@@ -394,6 +394,7 @@
     <Content Include="Views\Image\ImagesByUser.cshtml" />
     <Content Include="Views\Contest\InactiveContests.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\InactiveContestViewModel.cshtml" />
+    <Content Include="Views\Shared\_LeftSideNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

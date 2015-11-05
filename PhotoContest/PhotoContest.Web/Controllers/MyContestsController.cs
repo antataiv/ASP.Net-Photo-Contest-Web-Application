@@ -1,5 +1,4 @@
-﻿
-namespace PhotoContest.Web.Controllers
+﻿namespace PhotoContest.Web.Controllers
 {
     using System.Web.Mvc;
     using Microsoft.AspNet.Identity;
@@ -18,6 +17,9 @@ namespace PhotoContest.Web.Controllers
     using Microsoft.AspNet.SignalR;
     using PhotoContest.Web.Hubs;
     using System.ComponentModel.DataAnnotations;
+
+
+    [System.Web.Mvc.Authorize]
     public class MyContestsController : BaseController
     {
         public MyContestsController(IPhotoContestData data)
@@ -135,35 +137,41 @@ namespace PhotoContest.Web.Controllers
 
         }
 
+        //[ValidateAntiForgeryToken]
 
-        // GET: /MyContests/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(EditContestBindingModel model, int id)
         {
-            if (id == null)
+            var contestToEdit = this.Data.Contests.Find(id);
+
+            if (ModelState.IsValid)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var contestToEdit = this.Data.Contests.Find(id);
             if (contestToEdit == null)
             {
                 return this.RedirectToAction("Error404", "Home");
             }
 
-
-            return this.View(contestToEdit);
-        }
-
-        // POST: /MyContests/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, EditContestBindingModel model)
-        {
-            if (ModelState.IsValid)
+            if (model.Name != null)
             {
-
+                contestToEdit.Name = model.Name;
             }
-            return null;
+
+            contestToEdit.DeadlineStrategy = model.DeadlineStrategy;
+            if (model.EndDate != null)
+            {
+                contestToEdit.EndDate = model.EndDate;
+            }
+
+            if (model.ParticipantsLimit != null)
+            {
+                contestToEdit.ParticipantsLimit = model.ParticipantsLimit;
+            }
+
+            this.Data.SaveChanges();
+
+            return this.View();
         }
 
 

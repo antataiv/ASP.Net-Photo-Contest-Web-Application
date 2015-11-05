@@ -1,6 +1,4 @@
-﻿using PhotoContest.Models.Enums;
-
-namespace PhotoContest.Web.Controllers
+﻿namespace PhotoContest.Web.Controllers
 {
     using System.IO;
     using System.Threading.Tasks;
@@ -23,6 +21,8 @@ namespace PhotoContest.Web.Controllers
     using System.Collections.Generic;
     using Microsoft.AspNet.SignalR;
     using PhotoContest.Web.Hubs;
+    using PhotoContest.Models.Enums;
+
 
     [ValidateInput(false)]
     public class ContestController : BaseController
@@ -31,8 +31,6 @@ namespace PhotoContest.Web.Controllers
             : base(data)
         {
         }
-
-
         public ActionResult PastContests(int? page)
         {
             var inactiveContests = this.Data.Contests
@@ -263,8 +261,6 @@ namespace PhotoContest.Web.Controllers
             return this.RedirectToAction("Error404", "Home");
         }
 
-
-
         [HttpGet]
         [System.Web.Mvc.Authorize]
         public ActionResult Participate(string userId, int contestId)
@@ -347,7 +343,6 @@ namespace PhotoContest.Web.Controllers
         {
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationsHub>();
             hubContext.Clients.All.receiveNotification(message);
-
         }
     }
 }

@@ -18,6 +18,8 @@ namespace PhotoContest.Web.Controllers
     using System.Web.Mvc;
     using PagedList;
     using System.Net;
+    using System.Collections;
+    using System.Collections.Generic;
     using Microsoft.AspNet.SignalR;
     using PhotoContest.Web.Hubs;
 
@@ -60,10 +62,13 @@ namespace PhotoContest.Web.Controllers
 
         public ActionResult ContestsByUser(string userName, int? page)
         {
+            User userId = this.Data.Users.All().Where(u => u.UserName == userName).FirstOrDefault();
+
             var usersContests = this.Data.Contests
                 .All()
-                .Where(uc => uc.Creator.UserName == userName)
-                .OrderByDescending(uc => uc.StartDate)
+
+                .Where(uc=>uc.CreatorId==userId.Id)
+                .OrderByDescending(uc=>uc.StartDate)
                 .Project()
                 .To<ContestViewModelIndex>().ToPagedList(page ?? 1, 3);
 

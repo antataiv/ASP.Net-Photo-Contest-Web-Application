@@ -28,7 +28,11 @@
             new { @class = "btn btn-default" })
     </div>
 </div>
-<div class="col">
-    @Html.DisplayFor(model => model.MyContests)
-</div>
+@if (this.User.Identity.Name == Model.UserProfileViewModel.UserName || this.User.IsInRole("Admin"))
+{
+    <div class="col">
+        @Html.DisplayFor(model => model.MyContests)
+    </div>
+}
+
 

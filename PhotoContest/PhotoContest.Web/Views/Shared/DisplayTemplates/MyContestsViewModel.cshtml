@@ -15,7 +15,7 @@
             {
                 <mark>Active Contest</mark>
 
-                @if (Model.ParticipationStrategy == ParticipationStrategy.Closed && Model.CreatorId.Equals(this.User.Identity.GetUserId()))
+                if (Model.ParticipationStrategy == ParticipationStrategy.Closed && Model.CreatorId.Equals(this.User.Identity.GetUserId()))
                 {
                     <div class="btn-group">
                         <p>@Html.ActionLink("Invite participants", "AddParticipants", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
@@ -23,13 +23,13 @@
                 }
 
                 <div class="btn-group">
-                    <p>@Html.ActionLink("Update", "Edit", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
+                    <p>@Html.ActionLink("Update", "Edit", "MyContests", new { id = Model.Id, area = "" }, new { @class = "btn btn-default" })</p>
                 </div>
                 <div class="btn-group">
-                    <p>@Html.ActionLink("Dismiss", "DismissContest", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
+                    <p>@Html.ActionLink("Dismiss", "DismissContest", "MyContests", new { id = Model.Id, area = "" }, new { @class = "btn btn-default" })</p>
                 </div>
                 <div class="btn-group">
-                    <p>@Html.ActionLink("Finalize", "Finalize", "MyContests", new { id = Model.Id,area="" }, new { @class = "btn btn-default" })</p>
+                    <p>@Html.ActionLink("Finalize", "Finalize", "MyContests", new { id = Model.Id, area = "" }, new { @class = "btn btn-default" })</p>
                 </div>
                 if (this.User.IsInRole("Admin"))
                 {

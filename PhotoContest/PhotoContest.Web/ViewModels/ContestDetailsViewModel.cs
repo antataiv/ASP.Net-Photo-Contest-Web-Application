@@ -28,6 +28,8 @@ namespace PhotoContest.Web.ViewModels
 
         public ICollection<string> ParticipatingUsers { get; set; }
 
+        public int? ParticipantsLimit { get; set; }
+
         public int Participants { get; set; }
 
         public string ParticipationStrategy { get; set; }

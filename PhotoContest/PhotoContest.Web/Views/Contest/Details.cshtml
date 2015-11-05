@@ -4,6 +4,17 @@
     ViewBag.Title = "Contest Details";
 }
 
+@if (Model.CreatorName == this.User.Identity.Name
+        && Model.ParticipationStrategy == "Closed" &&
+        Model.Flag == PhotoContest.Models.Flag.Active &&
+        Model.ParticipantsLimit > Model.ParticipatingUsers.Count())
+{
+    <div class="btn-group">
+        <h3>@Model.ParticipatingUsers.Count() / @Model.ParticipantsLimit occupied</h3>
+        <p>@Html.ActionLink("Invite participants", "AddParticipants", "MyContests", new { id = Model.Id }, new { @class = "btn btn-default" })</p>
+    </div>
+}
+
 
 <div class="jumbotron container">
     <h2>@Model.Name</h2>
@@ -41,10 +52,16 @@
                     Active <span class="badge"><span class="glyphicon glyphicon-flag" aria-hidden="true" style="color: yellowgreen"></span></span>
                 </button>
             }
-            else
+            else if (Model.Flag.ToString() == "Inactive")
             {
                 <button class="btn btn-default" id="details-button" type="button">
                     Inactive <span class="badge"><span class="glyphicon glyphicon-flag" aria-hidden="true" style="color: red"></span></span>
+                </button>
+            }
+            else 
+            {
+                <button class="btn btn-default" id="details-button" type="button">
+                    Past <span class="badge"><span class="glyphicon glyphicon-flag" aria-hidden="true" style="color: blue"></span></span>
                 </button>
             }
             <button class="btn btn-default" id="details-button" type="button">

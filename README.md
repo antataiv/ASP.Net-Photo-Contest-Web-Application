@@ -1,4 +1,4 @@
-# Team-FIELDER-V2
-ASP.NET MVC Teamwork Project Version 2
+# Team-FIELDER
+Software University ASP.NET MVC Teamwork Project.
 
 https://teamfielderphotocontest2.azurewebsites.net/
